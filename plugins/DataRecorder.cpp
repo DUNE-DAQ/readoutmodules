@@ -5,25 +5,23 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#include "readout/NDReadoutTypes.hpp"
-#include "readout/ReadoutLogging.hpp"
-#include "readout/ReadoutTypes.hpp"
-#include "readout/datarecorder/Nljs.hpp"
-#include "readout/datarecorder/Structs.hpp"
-#include "readout/datarecorderinfo/InfoNljs.hpp"
-#include "readout/models/RecorderModel.hpp"
-
-#include "readoutmodules/ReadoutModulesIssues.hpp"
+//#include "readout/NDReadoutTypes.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+#include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "readoutlibs/recorderconfig/Nljs.hpp"
+#include "readoutlibs/recorderconfig/Structs.hpp"
+#include "readoutlibs/recorderinfo/InfoNljs.hpp"
+#include "readoutlibs/models/RecorderModel.hpp"
 
 #include "DataRecorder.hpp"
 #include "appfwk/DAQModuleHelper.hpp"
 
 #include "appfwk/cmd/Nljs.hpp"
 #include "logging/Logging.hpp"
-
+#include "readoutlibs/ReadoutIssues.hpp"
 #include <string>
 
-using namespace dunedaq::readout::logging;
+using namespace dunedaq::readoutlibs::logging;
 
 namespace dunedaq {
 namespace readoutmodules {
@@ -41,44 +39,46 @@ DataRecorder::init(const data_t& args)
 {
   try {
     auto qi = appfwk::queue_index(args, { "raw_recording" });
-	    auto inst = qi["raw_recording"].inst;
+    auto inst = qi["raw_recording"].inst;
 
-	    // IF WIB2
-	    if (inst.find("wib2") != std::string::npos) {
-	      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib2";
-	      recorder.reset(new readout::RecorderImpl<readout::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
-	      recorder->init(args);
-	      return;
-	    }
+    // IF WIB2
+    if (inst.find("wib2") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib2";
+      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
+      recorder->init(args);
+      return;
+    }
 
-	    // IF WIB
-	    if (inst.find("wib") != std::string::npos) {
-	      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib";
-	      recorder.reset(new readout::RecorderImpl<readout::types::WIB_SUPERCHUNK_STRUCT>(get_name()));
-	      recorder->init(args);
-	      return;
-	    }
+    // IF WIB
+    if (inst.find("wib") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib";
+      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>(get_name()));
+      recorder->init(args);
+      return;
+    }
 
-	    // IF PDS
-	    if (inst.find("pds") != std::string::npos) {
-	      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pds";
-	      recorder.reset(new readout::RecorderImpl<readout::types::DAPHNE_SUPERCHUNK_STRUCT>(get_name()));
-	      recorder->init(args);
-	      return;
-	    }
+    // IF PDS
+    if (inst.find("pds") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pds";
+      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>(get_name()));
+      recorder->init(args);
+      return;
+    }
 
-	    // IF PACMAN
-	    if (inst.find("pacman") != std::string::npos) {
-	      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pacman";
-	      recorder.reset(new readout::RecorderImpl<readout::types::PACMAN_MESSAGE_STRUCT>(get_name()));
-	      recorder->init(args);
-	      return;
-	    }
+    /*
+    // IF PACMAN
+    if (inst.find("pacman") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pacman";
+      recorder.reset(new readoutlibs::RecorderImpl<types::PACMAN_MESSAGE_STRUCT>(get_name()));
+      recorder->init(args);
+      return;
+    }
+    */
 
-	    throw DataRecorderConfigurationError(ERS_HERE, "Could not create DataRecorder of type " + inst);
+    throw readoutlibs::DataRecorderConfigurationError(ERS_HERE, "Could not create DataRecorder of type " + inst);
 
   } catch (const ers::Issue& excpt) {
-    throw DataRecorderResourceQueueError(ERS_HERE, "Could not initialize queue", "raw_recording", "");
+    throw readoutlibs::DataRecorderResourceQueueError(ERS_HERE, "Could not initialize queue", "raw_recording", "");
   }
 }
 

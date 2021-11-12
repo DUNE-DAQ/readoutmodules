@@ -12,20 +12,22 @@
 #include "appfwk/cmd/Nljs.hpp"
 #include "appfwk/cmd/Structs.hpp"
 
-#include "readout/ReadoutLogging.hpp"
-#include "readout/models/SourceEmulatorModel.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+#include "readoutlibs/models/SourceEmulatorModel.hpp"
+
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
 #include <memory>
 #include <string>
 #include <utility>
 
-using dunedaq::readout::logging::TLVL_WORK_STEPS;
+using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
 namespace readoutmodules {
 
-std::unique_ptr<readout::SourceEmulatorConcept>
+std::unique_ptr<readoutlibs::SourceEmulatorConcept>
 createSourceEmulator(const appfwk::app::QueueInfo qi, std::atomic<bool>& run_marker)
 {
   //! Values suitable to emulation
@@ -42,30 +44,39 @@ createSourceEmulator(const appfwk::app::QueueInfo qi, std::atomic<bool>& run_mar
   static constexpr double wib2_dropout_rate = 0.0;
   static constexpr double wib2_rate_khz = 166.0;
 
+  static constexpr double emu_frame_error_rate = 0.0;
+
   auto& inst = qi.inst;
 
   // IF WIB2
   if (inst.find("wib2") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib2 link";
 
-    auto source_emu_model = std::make_unique<readout::SourceEmulatorModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>>(
-      qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, wib2_rate_khz);
+    auto source_emu_model = std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>>(
+      qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, emu_frame_error_rate, wib2_rate_khz);
     return source_emu_model;
   }
 
   // IF WIB
   if (inst.find("wib") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
-    auto source_emu_model = std::make_unique<readout::SourceEmulatorModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>>(
-      qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, wib_rate_khz);
+    auto source_emu_model = std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>>(
+      qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz);
     return source_emu_model;
   }
 
   // IF PDS
   if (inst.find("pds") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
-    auto source_emu_model = std::make_unique<readout::SourceEmulatorModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>>(
-      qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, daphne_rate_khz);
+    auto source_emu_model = std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>>(
+      qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz);
+    return source_emu_model;
+  }
+
+  // TP link
+  if (inst.find("tp") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tp link";
+    auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
     return source_emu_model;
   }
 

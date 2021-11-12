@@ -14,14 +14,13 @@
 #define READOUTMODULES_PLUGINS_FAKECARDREADER_HPP_
 
 // package
-#include "readout/ReadoutTypes.hpp"
-#include "readout/concepts/SourceEmulatorConcept.hpp"
-#include "readout/sourceemulatorconfig/Structs.hpp"
-#include "readout/utils/ReusableThread.hpp"
-#include "readout/utils/FileSourceBuffer.hpp"
-#include "readout/utils/RateLimiter.hpp"
-
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
+#include "readoutlibs/sourceemulatorconfig/Structs.hpp"
+#include "readoutlibs/utils/ReusableThread.hpp"
+//#include "CreateSourceEmulator.hpp"
+#include "readoutlibs/utils/FileSourceBuffer.hpp"
+#include "readoutlibs/utils/RateLimiter.hpp"
 
 // appfwk
 #include "appfwk/DAQModule.hpp"
@@ -67,21 +66,20 @@ private:
 
   // Configuration
   bool m_configured;
-  using module_conf_t = sourceemulatorconfig::Conf;
+  using module_conf_t = readoutlibs::sourceemulatorconfig::Conf;
   module_conf_t m_cfg;
 
-  std::map<std::string, std::unique_ptr<readout::SourceEmulatorConcept>> m_source_emus;
+  std::map<std::string, std::unique_ptr<readoutlibs::SourceEmulatorConcept>> m_source_emus;
 
   // appfwk Queues
   std::chrono::milliseconds m_queue_timeout_ms;
   std::vector<sink_t*> m_output_queues;
 
   // Internals
-  std::unique_ptr<readout::FileSourceBuffer> m_source_buffer;
+  std::unique_ptr<readoutlibs::FileSourceBuffer> m_source_buffer;
 
   // Threading
   std::atomic<bool> m_run_marker;
-
 };
 
 } // namespace readoutmodules

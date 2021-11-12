@@ -6,13 +6,8 @@
  * received with this code.
  */
 
-#ifndef READOUTMODULES_PLUGINS_TIMESYNCCONSUMER_HPP_
-#define READOUTMODULES_PLUGINS_TIMESYNCCONSUMER_HPP_
-
-#include "DummyConsumer.cpp"
 #include "DummyConsumer.hpp"
 #include "dfmessages/TimeSync.hpp"
 
 DEFINE_DUNE_DAQ_MODULE(dunedaq::readoutmodules::DummyConsumer<dunedaq::dfmessages::TimeSync>)
 
-#endif // READOUTMODULES_PLUGINS_TIMESYNCCONSUMER_HPP_

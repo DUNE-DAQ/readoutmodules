@@ -12,9 +12,8 @@
 #include "appfwk/DAQModule.hpp"
 #include "appfwk/DAQSource.hpp"
 #include "dfmessages/TimeSync.hpp"
-
-#include "readout/ReadoutTypes.hpp"
-#include "readout/utils/ReusableThread.hpp"
+#include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "readoutlibs/utils/ReusableThread.hpp"
 
 #include <atomic>
 #include <fstream>
@@ -24,6 +23,7 @@
 
 namespace dunedaq {
 namespace readoutmodules {
+
 template<class T>
 class DummyConsumer : public dunedaq::appfwk::DAQModule
 {
@@ -52,12 +52,13 @@ private:
   std::unique_ptr<source_t> m_input_queue;
 
   // Threading
-  readout::ReusableThread m_work_thread;
+  readoutlibs::ReusableThread m_work_thread;
   std::atomic<bool> m_run_marker;
 
   // Stats
   std::atomic<int> m_packets_processed{ 0 };
 };
+
 } // namespace readoutmodules
 } // namespace dunedaq
 

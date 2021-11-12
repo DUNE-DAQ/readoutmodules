@@ -5,20 +5,21 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#include "appfwk/DAQModuleHelper.hpp"
+#include "DummyConsumer.hpp"
+
+//#include "appfwk/DAQModuleHelper.hpp"
 #include "appfwk/cmd/Nljs.hpp"
 #include "logging/Logging.hpp"
 
-#include "readout/ReadoutLogging.hpp"
-#include "readoutmodules/ReadoutModulesIssues.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+#include "readoutlibs/ReadoutIssues.hpp"
 
 #include "readoutmodules/dummyconsumerinfo/InfoNljs.hpp"
-#include "DummyConsumer.hpp"
 
 #include <string>
 
 namespace dunedaq {
-namespace readoutmodules {
+namespace readout {
 
 using namespace logging;
 

@@ -5,7 +5,7 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#include "readout/ReadoutLogging.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
 
 #include "DataLinkHandler.hpp"
 
@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq::readout::logging;
+using namespace dunedaq::readoutlibs::logging;
 
 namespace dunedaq {
 namespace readoutmodules {
@@ -45,7 +45,7 @@ DataLinkHandler::init(const data_t& args)
   if (m_readout_impl == nullptr) {
     TLOG() << get_name() << "Initialize readout implementation FAILED! "
            << "Failed to find specialization for given queue setup!";
-    throw readout::FailedReadoutInitialization(ERS_HERE, get_name(), args.dump()); // 4 json ident
+    throw readoutlibs::FailedReadoutInitialization(ERS_HERE, get_name(), args.dump()); // 4 json ident
   }
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting init() method";
 }

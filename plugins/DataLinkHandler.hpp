@@ -9,12 +9,9 @@
 #ifndef READOUTMODULES_PLUGINS_DATALINKHANDLER_HPP_
 #define READOUTMODULES_PLUGINS_DATALINKHANDLER_HPP_
 
-#include "appfwk/DAQModule.hpp"
-
-#include "readout/concepts/ReadoutConcept.hpp"
-#include "readoutmodules/datalinkhandler/Structs.hpp"
-
 #include "CreateReadout.hpp"
+
+#include "appfwk/DAQModule.hpp"
 
 #include <chrono>
 #include <memory>
@@ -51,11 +48,10 @@ private:
 
   // Configuration
   bool m_configured;
-  using module_conf_t = datalinkhandler::Conf;
   daqdataformats::run_number_t m_run_number;
 
   // Internal
-  std::unique_ptr<readout::ReadoutConcept> m_readout_impl;
+  std::unique_ptr<readoutlibs::ReadoutConcept> m_readout_impl;
 
   // Threading
   std::atomic<bool> m_run_marker;

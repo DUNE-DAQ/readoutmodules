@@ -9,20 +9,21 @@
 #ifndef READOUTMODULES_PLUGINS_FRAGMENTCONSUMER_HPP_
 #define READOUTMODULES_PLUGINS_FRAGMENTCONSUMER_HPP_
 
-#include "DummyConsumer.cpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+
 #include "DummyConsumer.hpp"
 #include "daqdataformats/Fragment.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
-#include "readout/ReadoutTypes.hpp"
-#include "readout/ReadoutLogging.hpp"
+#include "fdreadoutlibs/FDReadoutTypes.hpp"
 
 #include <memory>
 #include <string>
 
-using namespace dunedaq::readout::logging;
+using namespace dunedaq::readoutlibs::logging;
 
 namespace dunedaq {
 namespace readoutmodules {
+
 class FragmentConsumer : public DummyConsumer<std::unique_ptr<dunedaq::daqdataformats::Fragment>>
 {
 public:
@@ -46,13 +47,13 @@ public:
       return;
     } else if ((fragment.get_header().fragment_type ==
                 static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kTPCData)) ||
-               (static_cast<detdataformats::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
+               (static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
       int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / 464;
       auto window_begin = fragment.get_header().window_begin;
       auto window_end = fragment.get_header().window_end;
 
-      detdataformats::WIBFrame* first_frame = static_cast<detdataformats::WIBFrame*>(fragment.get_data());
-      detdataformats::WIBFrame* last_frame = reinterpret_cast<detdataformats::WIBFrame*>( // NOLINT
+      detdataformats::wib::WIBFrame* first_frame = static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data());
+      detdataformats::wib::WIBFrame* last_frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
         static_cast<char*>(fragment.get_data()) + (num_frames - 1) * 464);          // NOLINT
 
       if (!((first_frame->get_timestamp() >= window_begin) && (first_frame->get_timestamp() < window_begin + 25))) {
@@ -63,7 +64,7 @@ public:
       }
 
       for (int i = 0; i < num_frames; ++i) {
-        detdataformats::WIBFrame* frame = reinterpret_cast<detdataformats::WIBFrame*>( // NOLINT
+        detdataformats::wib::WIBFrame* frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
           static_cast<char*>(fragment.get_data()) + (i * 464));
         if (frame->get_timestamp() < fragment.get_header().window_begin ||
             frame->get_timestamp() >= fragment.get_header().window_end) {
@@ -75,7 +76,7 @@ public:
       int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / 584;
 
       for (int i = 0; i < num_frames; ++i) {
-        detdataformats::DAPHNEFrame* frame = reinterpret_cast<detdataformats::DAPHNEFrame*>( // NOLINT
+        detdataformats::daphne::DAPHNEFrame* frame = reinterpret_cast<detdataformats::daphne::DAPHNEFrame*>( // NOLINT
           static_cast<char*>(fragment.get_data()) + (i * 584));
         if (frame->get_timestamp() < fragment.get_header().window_begin ||
             frame->get_timestamp() >= fragment.get_header().window_end) {
@@ -85,6 +86,7 @@ public:
     }
   }
 };
+
 } // namespace readoutmodules
 } // namespace dunedaq
 

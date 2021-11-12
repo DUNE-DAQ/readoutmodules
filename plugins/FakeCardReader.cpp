@@ -5,19 +5,19 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#include "readout/ReadoutLogging.hpp"
-#include "readoutmodules/sourceemulatorconfig/Nljs.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+#include "readoutlibs/sourceemulatorconfig/Nljs.hpp"
 
 #include "CreateSourceEmulator.hpp"
 #include "FakeCardReader.hpp"
-#include "readoutmodules/ReadoutModulesIssues.hpp"
-#include "readout/models/SourceEmulatorModel.hpp"
+#include "readoutlibs/ReadoutIssues.hpp"
+#include "readoutlibs/models/SourceEmulatorModel.hpp"
 
 #include "appfwk/app/Nljs.hpp"
 #include "appfwk/cmd/Nljs.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
 #include "logging/Logging.hpp"
-#include "readout/RawWIBTp.hpp" // FIXME now using local copy
+#include "fdreadoutlibs/wib/RawWIBTp.hpp"
 
 #include <chrono>
 #include <fstream>
@@ -29,7 +29,7 @@
 #include <utility>
 #include <vector>
 
-using namespace dunedaq::readout::logging;
+using namespace dunedaq::readoutlibs::logging;
 
 namespace dunedaq {
 namespace readoutmodules {
@@ -58,17 +58,17 @@ FakeCardReader::init(const data_t& args)
     try {
       if (m_source_emus.find(qi.name) != m_source_emus.end()) {
         TLOG() << get_name() << "Same queue instance used twice";
-        throw FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
+        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
       }
       m_source_emus[qi.name] = createSourceEmulator(qi, m_run_marker);
       if (m_source_emus[qi.name].get() == nullptr) {
         TLOG() << get_name() << "Source emulator could not be created";
-        throw FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
+        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
       }
       m_source_emus[qi.name]->init(args);
       m_source_emus[qi.name]->set_sink(qi.inst);
     } catch (const ers::Issue& excpt) {
-      throw ResourceQueueError(ERS_HERE, qi.name, get_name(), excpt);
+      throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_name(), excpt);
     }
   }
   TLOG_DEBUG(TLVL_BOOKKEEPING) << "Number of WIB output queues: " << m_output_queues.size();
@@ -92,23 +92,23 @@ FakeCardReader::do_conf(const data_t& args)
   if (m_configured) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "This module is already configured!";
   } else {
-    m_cfg = args.get<sourceemulatorconfig::Conf>();
+    m_cfg = args.get<readoutlibs::sourceemulatorconfig::Conf>();
 
     for (const auto& emu_conf : m_cfg.link_confs) {
       if (m_source_emus.find(emu_conf.queue_name) == m_source_emus.end()) {
         TLOG() << "Cannot find queue: " << emu_conf.queue_name << std::endl;
-        throw GenericConfigurationError(ERS_HERE, "Cannot find queue: " + emu_conf.queue_name);
+        throw readoutlibs::GenericConfigurationError(ERS_HERE, "Cannot find queue: " + emu_conf.queue_name);
       }
       if (m_source_emus[emu_conf.queue_name]->is_configured()) {
         TLOG() << "Emulator for queue name " << emu_conf.queue_name << " was already configured";
-        throw GenericConfigurationError(ERS_HERE, "Emulator configured twice: " + emu_conf.queue_name);
+        throw readoutlibs::GenericConfigurationError(ERS_HERE, "Emulator configured twice: " + emu_conf.queue_name);
       }
       m_source_emus[emu_conf.queue_name]->conf(args, emu_conf);
     }
 
     for (auto& [name, emu] : m_source_emus) {
       if (!emu->is_configured()) {
-        throw GenericConfigurationError(ERS_HERE, "Not all links were configured");
+        throw readoutlibs::GenericConfigurationError(ERS_HERE, "Not all links were configured");
       }
     }
 

@@ -9,7 +9,7 @@ find_package(ers REQUIRED)
 find_package(appfwk REQUIRED)
 find_package(logging REQUIRED)
 find_package(opmonlib REQUIRED)
-find_package(readout REQUIRED)
+find_package(readoutlibs REQUIRED)
 find_package(fdreadoutlibs REQUIRED)
 find_package(daqdataformats REQUIRED)
 find_package(detdataformats REQUIRED)
@@ -21,7 +21,7 @@ find_package(folly REQUIRED)
 find_package(Boost COMPONENTS iostreams REQUIRED)
 set(BOOST_LIBS Boost::iostreams ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_LIBRARIES})
 
-daq_codegen( readoutconfig.jsonnet datalinkhandler.jsonnet  datarecorder.jsonnet  sourceemulatorconfig.jsonnet TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
+daq_codegen( TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
 daq_codegen( *info.jsonnet DEP_PKGS opmonlib TEMPLATES opmonlib/InfoStructs.hpp.j2 opmonlib/InfoNljs.hpp.j2 )
 
 ##############################################################################
@@ -33,7 +33,7 @@ set(READOUTMODULES_DEPENDENCIES
   logging::logging
 #dunedaq
   appfwk::appfwk
-  readout::readout
+  readoutlibs::readoutlibs
   fdreadoutlibs::fdreadoutlibs
   opmonlib::opmonlib
   daqdataformats::daqdataformats
@@ -43,10 +43,16 @@ set(READOUTMODULES_DEPENDENCIES
   trigger::trigger
 )
 
+set(FDREADOUTLIBS_USE_INTRINSICS ON)
+
+if(${FDREADOUTLIBS_USE_INTRINSICS})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
+endif()
+
+
 ##############################################################################
 # Main library
 daq_add_library(
-
   LINK_LIBRARIES ${READOUTMODULES_DEPENDENCIES}
 )
 

@@ -12,11 +12,11 @@
 #include "appfwk/DAQModule.hpp"
 #include "appfwk/DAQSource.hpp"
 #include "appfwk/ThreadHelper.hpp"
-#include "readout/ReadoutTypes.hpp"
-#include "readout/concepts/RecorderConcept.hpp"
-#include "readout/datarecorder/Structs.hpp"
-#include "readout/utils/BufferedFileWriter.hpp"
-#include "readout/utils/ReusableThread.hpp"
+#include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "readoutlibs/concepts/RecorderConcept.hpp"
+#include "readoutlibs/recorderconfig/Structs.hpp"
+#include "readoutlibs/utils/BufferedFileWriter.hpp"
+#include "readoutlibs/utils/ReusableThread.hpp"
 
 #include <atomic>
 #include <fstream>
@@ -46,7 +46,7 @@ private:
   void do_start(const nlohmann::json& obj);
   void do_stop(const nlohmann::json& obj);
 
-  std::unique_ptr<readout::RecorderConcept> recorder;
+  std::unique_ptr<readoutlibs::RecorderConcept> recorder;
 };
 } // namespace readoutmodules
 } // namespace dunedaq
