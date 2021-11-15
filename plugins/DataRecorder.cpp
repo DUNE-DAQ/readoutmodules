@@ -8,6 +8,7 @@
 //#include "readout/NDReadoutTypes.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "readoutlibs/recorderconfig/Nljs.hpp"
 #include "readoutlibs/recorderconfig/Structs.hpp"
 #include "readoutlibs/recorderinfo/InfoNljs.hpp"
@@ -65,15 +66,13 @@ DataRecorder::init(const data_t& args)
       return;
     }
 
-    /*
     // IF PACMAN
     if (inst.find("pacman") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pacman";
-      recorder.reset(new readoutlibs::RecorderImpl<types::PACMAN_MESSAGE_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderImpl<ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT>(get_name()));
       recorder->init(args);
       return;
     }
-    */
 
     throw readoutlibs::DataRecorderConfigurationError(ERS_HERE, "Could not create DataRecorder of type " + inst);
 

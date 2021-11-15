@@ -24,6 +24,9 @@
 #include "readoutlibs/models/EmptyFragmentRequestHandlerModel.hpp"
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "ndreadoutlibs/NDReadoutTypes.hpp"
+#include "ndreadoutlibs/pacman/PACMANListRequestHandler.hpp"
+#include "ndreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 #include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
 #include "fdreadoutlibs/wib/SWWIBTriggerPrimitiveProcessor.hpp"
 #include "fdreadoutlibs/wib/RAWWIBTriggerPrimitiveProcessor.hpp"
@@ -31,10 +34,6 @@
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
-
-//#include "readout/NDReadoutTypes.hpp"
-//#include "fdreadoutlibs/pacman/PACMANListRequestHandler.hpp"
-//#include "fdreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 
 #include <memory>
 #include <string>
@@ -52,6 +51,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   namespace rol = dunedaq::readoutlibs;
   namespace fdl = dunedaq::fdreadoutlibs;
   namespace fdt = dunedaq::fdreadoutlibs::types;
+  namespace ndt = dunedaq::ndreadoutlibs::types;
 
   auto queues = args.get<appfwk::app::ModInit>().qinfos;
   for (const auto& qi : queues) {
@@ -143,19 +143,17 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         readout_model->init(args);
         return std::move(readout_model);
       }
-
-/* 
+ 
       // IF ND LAr PACMAN
       if (inst.find("pacman") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pacman";
-        auto readout_model = std::make_unique<rol::ReadoutModel<fdt::PACMAN_MESSAGE_STRUCT,
-                                                           PACMANListRequestHandler,
-                                                           SkipListLatencyBufferModel<fdt::PACMAN_MESSAGE_STRUCT>,
-                                                           PACMANFrameProcessor>>(run_marker);
+        auto readout_model = std::make_unique<rol::ReadoutModel<ndt::PACMAN_MESSAGE_STRUCT,
+                                                           ndreadoutlibs::PACMANListRequestHandler,
+                                                           rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
+                                                           ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
       }
-*/
 
       // IF variadic
       if (inst.find("varsize") != std::string::npos) {

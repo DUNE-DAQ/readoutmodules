@@ -11,6 +11,7 @@ find_package(logging REQUIRED)
 find_package(opmonlib REQUIRED)
 find_package(readoutlibs REQUIRED)
 find_package(fdreadoutlibs REQUIRED)
+find_package(ndreadoutlibs REQUIRED)
 find_package(daqdataformats REQUIRED)
 find_package(detdataformats REQUIRED)
 find_package(dfmessages REQUIRED)
@@ -35,6 +36,7 @@ set(READOUTMODULES_DEPENDENCIES
   appfwk::appfwk
   readoutlibs::readoutlibs
   fdreadoutlibs::fdreadoutlibs
+  ndreadoutlibs::ndreadoutlibs
   opmonlib::opmonlib
   daqdataformats::daqdataformats
   detdataformats::detdataformats
@@ -63,6 +65,7 @@ daq_add_plugin(DataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules ${BOO
 daq_add_plugin(DataRecorder duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
 daq_add_plugin(FragmentConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(TimeSyncConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
+daq_add_plugin(ErroredFrameConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 
 ##############################################################################
 # Integration tests

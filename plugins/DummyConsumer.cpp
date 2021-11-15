@@ -7,7 +7,7 @@
  */
 #include "DummyConsumer.hpp"
 
-//#include "appfwk/DAQModuleHelper.hpp"
+#include "appfwk/DAQModuleHelper.hpp"
 #include "appfwk/cmd/Nljs.hpp"
 #include "logging/Logging.hpp"
 
@@ -19,7 +19,7 @@
 #include <string>
 
 namespace dunedaq {
-namespace readout {
+namespace readoutmodules {
 
 using namespace logging;
 
@@ -40,7 +40,7 @@ DummyConsumer<T>::init(const data_t& args)
     auto qi = appfwk::queue_index(args, { "input_queue" });
     m_input_queue.reset(new source_t(qi["input_queue"].inst));
   } catch (const ers::Issue& excpt) {
-    throw GenericResourceQueueError(ERS_HERE, "input_queue", get_name(), excpt);
+    throw readoutlibs::GenericResourceQueueError(ERS_HERE, "input_queue", get_name(), excpt);
   }
 }
 
