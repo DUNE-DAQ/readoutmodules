@@ -25,7 +25,10 @@ ERS_DECLARE_ISSUE(readoutmodules,
                   "GeoID[" << geoid << "] Command Error: " << commanderror,
                   ((daqdataformats::GeoID)geoid)((std::string)commanderror))
 
-ERS_DECLARE_ISSUE(readoutmodules, InitializationError, "Readout Initialization Error: " << initerror, ((std::string)initerror))
+ERS_DECLARE_ISSUE(readoutmodules,
+                  InitializationError,
+                  "Readout Initialization Error: " << initerror,
+                  ((std::string)initerror))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   ConfigurationError,
@@ -42,7 +45,10 @@ ERS_DECLARE_ISSUE(readoutmodules,
                   "Configuration Error: " << conferror,
                   ((std::string)conferror))
 
-ERS_DECLARE_ISSUE(readoutmodules, GenericConfigurationError, "Configuration Error: " << conferror, ((std::string)conferror))
+ERS_DECLARE_ISSUE(readoutmodules,
+                  GenericConfigurationError,
+                  "Configuration Error: " << conferror,
+                  ((std::string)conferror))
 
 ERS_DECLARE_ISSUE(readoutmodules, CannotOpenFile, "Couldn't open binary file: " << filename, ((std::string)filename))
 
@@ -98,7 +104,10 @@ ERS_DECLARE_ISSUE_BASE(readoutmodules,
                        ((std::string)name),
                        ((std::string)initparams))
 
-ERS_DECLARE_ISSUE(readoutmodules, FailedFakeCardInitialization, "Could not initialize fake card " << name, ((std::string)name))
+ERS_DECLARE_ISSUE(readoutmodules,
+                  FailedFakeCardInitialization,
+                  "Could not initialize fake card " << name,
+                  ((std::string)name))
 
 ERS_DECLARE_ISSUE_BASE(readoutmodules,
                        NoImplementationAvailableError,
@@ -124,14 +133,20 @@ ERS_DECLARE_ISSUE(readoutmodules,
                   "The " << queueType << " queue was not successfully created for " << moduleName,
                   ((std::string)queueType)((std::string)moduleName))
 
-ERS_DECLARE_ISSUE(readoutmodules, ConfigurationNote, "ConfigurationNote: " << text, ((std::string)name)((std::string)text))
+ERS_DECLARE_ISSUE(readoutmodules,
+                  ConfigurationNote,
+                  "ConfigurationNote: " << text,
+                  ((std::string)name)((std::string)text))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   ConfigurationProblem,
                   "GeoID[" << geoid << "] Configuration problem: " << text,
                   ((daqdataformats::GeoID)geoid)((std::string)text))
 
-ERS_DECLARE_ISSUE(readoutmodules, RequestTimedOut, "GeoID[" << geoid << "] Request timed out", ((daqdataformats::GeoID)geoid))
+ERS_DECLARE_ISSUE(readoutmodules,
+                  RequestTimedOut,
+                  "GeoID[" << geoid << "] Request timed out",
+                  ((daqdataformats::GeoID)geoid))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   EndOfRunEmptyFragment,

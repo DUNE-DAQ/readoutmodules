@@ -16,8 +16,8 @@
 #include "appfwk/app/Nljs.hpp"
 #include "appfwk/cmd/Nljs.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
-#include "logging/Logging.hpp"
 #include "fdreadoutlibs/wib/RawWIBTp.hpp"
+#include "logging/Logging.hpp"
 
 #include <chrono>
 #include <fstream>

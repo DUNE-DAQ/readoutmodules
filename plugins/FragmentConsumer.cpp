@@ -54,7 +54,7 @@ public:
 
       detdataformats::wib::WIBFrame* first_frame = static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data());
       detdataformats::wib::WIBFrame* last_frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
-        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * 464);          // NOLINT
+        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * 464);                          // NOLINT
 
       if (!((first_frame->get_timestamp() >= window_begin) && (first_frame->get_timestamp() < window_begin + 25))) {
         TLOG() << "First fragment not correctly aligned";

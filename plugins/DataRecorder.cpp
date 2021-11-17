@@ -6,13 +6,13 @@
  * received with this code.
  */
 //#include "readout/NDReadoutTypes.hpp"
-#include "readoutlibs/ReadoutLogging.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
+#include "readoutlibs/models/RecorderModel.hpp"
 #include "readoutlibs/recorderconfig/Nljs.hpp"
 #include "readoutlibs/recorderconfig/Structs.hpp"
 #include "readoutlibs/recorderinfo/InfoNljs.hpp"
-#include "readoutlibs/models/RecorderModel.hpp"
 
 #include "DataRecorder.hpp"
 #include "appfwk/DAQModuleHelper.hpp"

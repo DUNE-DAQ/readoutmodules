@@ -11,8 +11,8 @@
 #include "appfwk/cmd/Nljs.hpp"
 #include "logging/Logging.hpp"
 
-#include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/ReadoutIssues.hpp"
+#include "readoutlibs/ReadoutLogging.hpp"
 
 #include "readoutmodules/dummyconsumerinfo/InfoNljs.hpp"
 

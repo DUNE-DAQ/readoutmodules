@@ -6,8 +6,8 @@
  * recieved with this code.
  * */
 
-#include "DummyConsumer.hpp"
 #include "DummyConsumer.cpp"
+#include "DummyConsumer.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
 #include "logging/Logging.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
