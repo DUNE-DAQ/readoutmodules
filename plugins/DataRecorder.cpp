@@ -31,6 +31,7 @@ DataRecorder::DataRecorder(const std::string& name)
   : DAQModule(name)
 {
   register_command("conf", &DataRecorder::do_conf);
+  register_command("scrap", &DataRecorder::do_scrap);
   register_command("start", &DataRecorder::do_start);
   register_command("stop", &DataRecorder::do_stop);
 }
@@ -91,6 +92,12 @@ void
 DataRecorder::do_conf(const data_t& args)
 {
   recorder->do_conf(args);
+}
+
+void
+DataRecorder::do_scrap(const data_t& args)
+{
+  recorder->do_scrap(args);
 }
 
 void

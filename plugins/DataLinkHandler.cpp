@@ -66,9 +66,10 @@ DataLinkHandler::do_conf(const data_t& args)
 }
 
 void
-DataLinkHandler::do_scrap(const data_t& /*args*/)
+DataLinkHandler::do_scrap(const data_t& args)
 {
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering do_scrap() method";
+  m_readout_impl->scrap(args);
   m_configured = false;
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting do_scrap() method";
 }
