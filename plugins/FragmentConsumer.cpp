@@ -12,6 +12,7 @@
 #include "readoutlibs/ReadoutLogging.hpp"
 
 #include "DummyConsumer.hpp"
+#include "DummyConsumer.cpp"
 #include "daqdataformats/Fragment.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
