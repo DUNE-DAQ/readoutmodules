@@ -15,9 +15,6 @@ find_package(ndreadoutlibs REQUIRED)
 find_package(daqdataformats REQUIRED)
 find_package(detdataformats REQUIRED)
 find_package(dfmessages REQUIRED)
-find_package(triggeralgs REQUIRED)
-find_package(timinglibs REQUIRED)
-find_package(trigger REQUIRED)
 find_package(folly REQUIRED)
 find_package(Boost COMPONENTS iostreams REQUIRED)
 set(BOOST_LIBS Boost::iostreams ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_LIBRARIES})
@@ -40,9 +37,6 @@ set(READOUTMODULES_DEPENDENCIES
   opmonlib::opmonlib
   daqdataformats::daqdataformats
   detdataformats::detdataformats
-  dfmessages::dfmessages
-  triggeralgs::triggeralgs
-  trigger::trigger
 )
 
 set(FDREADOUTLIBS_USE_INTRINSICS ON)
