@@ -16,6 +16,7 @@ moo.otypes.load_types("readoutlibs/readoutconfig.jsonnet")
 moo.otypes.load_types("readoutlibs/recorderconfig.jsonnet")
 moo.otypes.load_types("nwqueueadapters/queuetonetwork.jsonnet")
 moo.otypes.load_types("nwqueueadapters/networkobjectsender.jsonnet")
+moo.otypes.load_types('networkmanager/nwmgr.jsonnet')
 
 # Import new types
 import dunedaq.cmdlib.cmd as basecmd  # AddressedCmd,
@@ -27,6 +28,7 @@ import dunedaq.readoutlibs.readoutconfig as rconf
 import dunedaq.readoutlibs.recorderconfig as bfs
 import dunedaq.nwqueueadapters.queuetonetwork as qton
 import dunedaq.nwqueueadapters.networkobjectsender as nos
+import dunedaq.networkmanager.nwmgr as nwmgr
 
 from appfwk.utils import mcmd, mrccmd, mspec
 
@@ -143,7 +145,7 @@ def generate(
                         name="data_requests_0", inst=f"data_requests_{idx}", dir="input"
                     ),
                     app.QueueInfo(
-                        name="data_response_0", inst="data_fragments_q", dir="output"
+                        name="fragment_queue", inst="data_fragments_q", dir="output"
                     ),
                     app.QueueInfo(
                         name="tp_out", inst=f"sw_tp_queue_{idx}", dir="output"
@@ -189,7 +191,7 @@ def generate(
                         name="requests", inst="tp_data_requests", dir="input"
                     ),
                     app.QueueInfo(
-                        name="fragments", inst="data_fragments_q", dir="output"
+                        name="fragment_queue", inst="data_fragments_q", dir="output"
                     ),
                 ],
             )
@@ -232,7 +234,10 @@ def generate(
         ]
     )
 
-    init_specs = app.Init(queues=queue_specs, modules=mod_specs)
+    nw_specs = [nwmgr.Connection(name=f"tpsets_{idx}",topics=["foo"],  address="tcp://127.0.0.1:" + str(5000 + idx)) for idx in range(NUMBER_OF_DATA_PRODUCERS)]
+    nw_specs.append(nwmgr.Connection(name="timesync", topics=["Timesync"], address="tcp://127.0.0.1:6000"))
+
+    init_specs = app.Init(queues=queue_specs, modules=mod_specs, nwconnections=nw_specs)
 
     jstr = json.dumps(init_specs.pod(), indent=4, sort_keys=True)
     print(jstr)
@@ -290,6 +295,8 @@ def generate(
                         fake_trigger_flag=1,
                         region_id=0,
                         element_id=idx,
+                        timesync_connection_name = f"timesync",
+                        timesync_topic_name = "Timesync",
                     ),
                     latencybufferconf=rconf.LatencyBufferConf(
                         latency_buffer_size=3
@@ -407,8 +414,7 @@ def generate(
                     msg_type="dunedaq::trigger::TPSet",
                     msg_module_name="TPSetNQ",
                     sender_config=nos.Conf(
-                        ipm_plugin_type="ZmqPublisher",
-                        address="tcp://127.0.0.1:" + str(5000 + idx),
+                        name=f"tpsets_{idx}",
                         topic="foo",
                         stype="msgpack",
                     ),
