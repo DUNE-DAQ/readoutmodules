@@ -11,7 +11,7 @@
 
 #include "appfwk/DAQModule.hpp"
 #include "appfwk/DAQSource.hpp"
-#include "appfwk/ThreadHelper.hpp"
+#include "utilities/WorkerThread.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "readoutlibs/concepts/RecorderConcept.hpp"
 #include "readoutlibs/recorderconfig/Structs.hpp"
