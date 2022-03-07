@@ -69,6 +69,15 @@ def generate(
         ]
         + [
             app.QueueSpec(
+                inst=f"raw_tp_data_requests_{idx}", kind="FollySPSCQueue", capacity=1000
+            )
+            for idx in range(
+                NUMBER_OF_DATA_PRODUCERS,
+                NUMBER_OF_DATA_PRODUCERS + NUMBER_OF_TP_PRODUCERS,
+            )
+        ]
+        + [
+            app.QueueSpec(
                 inst=f"{FRONTEND_TYPE}_link_{idx}",
                 kind="FollySPSCQueue",
                 capacity=100000,
@@ -121,7 +130,7 @@ def generate(
                 ]
                 + [
                     app.QueueInfo(
-                        name=f"output_{idx}", inst=f"raw_tp_link_{idx}", dir="output"
+                        name=f"output_raw_tp_{idx}", inst=f"raw_tp_link_{idx}", dir="output"
                     )
                     for idx in range(
                         NUMBER_OF_DATA_PRODUCERS,
@@ -213,7 +222,15 @@ def generate(
                     app.QueueInfo(
                         name="raw_input", inst=f"raw_tp_link_{idx}", dir="input"
                     ),
-                    app.QueueInfo(name="timesync", inst="time_sync_q", dir="output"),
+                    app.QueueInfo(
+                        name="timesync", inst="time_sync_q", dir="output"
+                    ),
+                    app.QueueInfo(
+                        name="data_requests_1", inst=f"raw_tp_data_requests_{idx}", dir="input"
+                    ),
+                    app.QueueInfo(
+                        name="fragment_queue", inst="data_fragments_q", dir="output"
+                    ),
                 ],
             )
             for idx in range(
@@ -271,7 +288,7 @@ def generate(
                         sec.LinkConfiguration(
                             geoid=sec.GeoID(system="TPC", region=0, element=idx),
                             slowdown=DATA_RATE_SLOWDOWN_FACTOR,
-                            queue_name=f"output_{idx}",
+                            queue_name=f"output_raw_tp_{idx}",
                             tp_data_filename=TP_DATA_FILE,
                             emu_frame_error_rate=0,
                         )
@@ -396,9 +413,9 @@ def generate(
                         pop_size_pct=0.1,
                         region_id=0,
                         element_id=idx,
-                        output_file=f"output_{idx}.out",
+                        output_file=f"output_raw_tp_{idx}.out",
                         stream_buffer_size=8388608,
-                        enable_raw_recording=False,
+                        enable_raw_recording=True,
                     ),
                 ),
             )
