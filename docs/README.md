@@ -9,6 +9,7 @@ Before running the application, please download a small binary file that contain
 
     curl https://cernbox.cern.ch/index.php/s/7qNnuxD8igDOVJT/download -o frames.bin
 
+**Remark for software TPG**: In order to make the software TPG producing meaningful output, use a frame file from the directory described in the [Software TPG section](#enabling-the-software-tpg)!
     
 For WIB2 frames, download the following file that contains 120 WIB-2 Frames from the following [CERNBox link](https://cernbox.cern.ch/index.php/s/ocrHxSU8PucxphE), or like so:
 
