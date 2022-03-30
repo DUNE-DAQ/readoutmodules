@@ -137,8 +137,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         TLOG(TLVL_WORK_STEPS) << "Creating readout for raw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::EmptyFragmentRequestHandlerModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-                                                rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
+          rol::DefaultRequestHandlerModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
+                                          rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
           rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
