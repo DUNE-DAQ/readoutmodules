@@ -19,7 +19,7 @@ find_package(folly REQUIRED)
 find_package(Boost COMPONENTS iostreams REQUIRED)
 set(BOOST_LIBS Boost::iostreams ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_LIBRARIES})
 
-daq_codegen( TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
+daq_codegen( cpupinner.jsonnet TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
 daq_codegen( *info.jsonnet DEP_PKGS opmonlib TEMPLATES opmonlib/InfoStructs.hpp.j2 opmonlib/InfoNljs.hpp.j2 )
 
 ##############################################################################
@@ -61,6 +61,7 @@ daq_add_plugin(FragmentConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(TimeSyncConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(ErroredFrameConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(FragmentSender duneDAQModule LINK_LIBRARIES readoutmodules)
+daq_add_plugin(CPUPinner duneDAQModule LINK_LIBRARIES readoutmodules)
 
 ##############################################################################
 # Integration tests
