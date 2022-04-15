@@ -67,7 +67,10 @@ CPUPinner::do_work(std::atomic<bool>& running_flag)
 {
   size_t n_threads_to_pin = m_conf.thread_confs.size();
   size_t n_threads_pinned = 0;
-  while (running_flag.load()) {
+  int loop_count = 0;
+  auto threads_to_watch = m_conf.thread_confs;
+  threads_to_watch.clear();
+  while (running_flag.load() && loop_count++<= 15) {
     // Loop over the requested threads to pin. If we find a thread
     // with the given name, pin it and remove it from the list so we don't try it again next time
     for (auto it = m_conf.thread_confs.begin(); it != m_conf.thread_confs.end(); ) {
@@ -79,6 +82,7 @@ CPUPinner::do_work(std::atomic<bool>& running_flag)
         }
         TLOG_DEBUG(1) << "Pinning thread name " << it->name << ", tid " << tid << " to CPUs " << ss.str();
         pin_thread(tid, it->cpu_set);
+        threads_to_watch.push_back(*it);
         it = m_conf.thread_confs.erase(it);
         ++n_threads_pinned;
       } else {
@@ -95,6 +99,20 @@ CPUPinner::do_work(std::atomic<bool>& running_flag)
   } // while (running_flag.load())
 
   TLOG() << get_name() << ": do_work() done. Pinned " << n_threads_pinned << " out of " << n_threads_to_pin << " requested";
+
+  while (running_flag.load()) {
+    for (auto it = threads_to_watch.begin(); it != threads_to_watch.end(); ) {
+      int tid = tid_for_name(it->name);
+      if (tid >= 0) {
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        sched_getaffinity(tid, sizeof(cpu_set_t), &cpuset);
+        TLOG_DEBUG(3) << "Watching thread " << it->name << " (tid " << tid << ") " << std::hex << cpuset.__bits[0] << std::dec;
+      }
+      ++it;
+    }
+    sleep(3);
+  }
 }
 
 // pin the thread with thread ID `tid` to the set of CPUs in `cpus`
