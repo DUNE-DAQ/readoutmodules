@@ -1,0 +1,35 @@
+[
+    { "name": "fakeprod-0", "cpu_set": [0] },
+    { "name": "fakeprod-1", "cpu_set": [1] },
+    { "name": "fakeprod-2", "cpu_set": [16] },
+    { "name": "fakeprod-3", "cpu_set": [17] },
+    { "name": "fakeprod-4", "cpu_set": [32] },
+    { "name": "fakeprod-5", "cpu_set": [33] },
+
+    { "name": "postprocess-0-0", "cpu_set": [2] },
+    { "name": "postprocess-0-1", "cpu_set": [3] },
+    { "name": "postprocess-0-2", "cpu_set": [18] },
+    { "name": "postprocess-0-3", "cpu_set": [19] },
+    { "name": "postprocess-0-4", "cpu_set": [34] },
+    { "name": "postprocess-0-5", "cpu_set": [35] },
+
+    { "name": "ind-hits-0-0", "cpu_set": [4] },
+    { "name": "ind-hits-0-1", "cpu_set": [5] },
+    { "name": "ind-hits-0-2", "cpu_set": [20] },
+    { "name": "ind-hits-0-3", "cpu_set": [21] },
+    { "name": "ind-hits-0-4", "cpu_set": [36] },
+    { "name": "ind-hits-0-5", "cpu_set": [37] },
+
+    { "name": "consumer-0", "cpu_set": [6] },
+    { "name": "consumer-1", "cpu_set": [7] },
+    { "name": "consumer-6", "cpu_set": [8] },
+    { "name": "consumer-7", "cpu_set": [9] },
+    { "name": "consumer-2", "cpu_set": [22] },
+    { "name": "consumer-3", "cpu_set": [23] },
+    { "name": "consumer-8", "cpu_set": [24] },
+    { "name": "consumer-9", "cpu_set": [25] },
+    { "name": "consumer-4", "cpu_set": [38] },
+    { "name": "consumer-5", "cpu_set": [39] },
+    { "name": "consumer-10", "cpu_set": [40] },
+    { "name": "consumer-11", "cpu_set": [41] }
+]
