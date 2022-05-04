@@ -38,8 +38,7 @@ DummyConsumer<T>::init(const data_t& args)
 {
   try {
     auto qi = appfwk::connection_index(args, { "input_queue" });
-    iomanager::IOManager iom;
-    m_data_receiver = iom.get_receiver<T>(qi["input_queue"]);
+    m_data_receiver = get_iom_receiver<T>(qi["input_queue"]);
   } catch (const ers::Issue& excpt) {
     throw readoutlibs::GenericResourceQueueError(ERS_HERE, "input_queue", get_name(), excpt);
   }
