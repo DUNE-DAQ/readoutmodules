@@ -28,7 +28,7 @@ namespace dunedaq {
 namespace readoutmodules {
 
 std::unique_ptr<readoutlibs::SourceEmulatorConcept>
-createSourceEmulator(const appfwk::app::QueueInfo qi, std::atomic<bool>& run_marker)
+createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<bool>& run_marker)
 {
   //! Values suitable to emulation
 
@@ -46,7 +46,7 @@ createSourceEmulator(const appfwk::app::QueueInfo qi, std::atomic<bool>& run_mar
 
   static constexpr double emu_frame_error_rate = 0.0;
 
-  auto& inst = qi.inst;
+  auto& inst = qi.uid;
 
   // IF WIB2
   if (inst.find("wib2") != std::string::npos) {

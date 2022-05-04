@@ -37,8 +37,9 @@ void
 DummyConsumer<T>::init(const data_t& args)
 {
   try {
-    auto qi = appfwk::queue_index(args, { "input_queue" });
-    m_input_queue.reset(new source_t(qi["input_queue"].inst));
+    auto qi = appfwk::connection_index(args, { "input_queue" });
+    iomanager::IOManager iom;
+    m_data_receiver = iom.get_receiver<T>(qi["input_queue"]);
   } catch (const ers::Issue& excpt) {
     throw readoutlibs::GenericResourceQueueError(ERS_HERE, "input_queue", get_name(), excpt);
   }
@@ -80,10 +81,10 @@ DummyConsumer<T>::do_work()
   T element;
   while (m_run_marker) {
     try {
-      m_input_queue->pop(element, std::chrono::milliseconds(100));
+      element = m_data_receiver->receive(std::chrono::milliseconds(100));
       packet_callback(element);
       m_packets_processed++;
-    } catch (const dunedaq::appfwk::QueueTimeoutExpired& excpt) {
+    } catch (const dunedaq::iomanager::TimeoutExpired& excpt) {
       continue;
     }
   }
