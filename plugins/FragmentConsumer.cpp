@@ -25,18 +25,18 @@ using namespace dunedaq::readoutlibs::logging;
 namespace dunedaq {
 namespace readoutmodules {
 
-class FragmentConsumer : public DummyConsumer<std::pair<std::unique_ptr<dunedaq::daqdataformats::Fragment>, std::string>>
+class FragmentConsumer : public DummyConsumer<std::unique_ptr<dunedaq::daqdataformats::Fragment>>
 {
 public:
   explicit FragmentConsumer(const std::string name)
-    : DummyConsumer<std::pair<std::unique_ptr<dunedaq::daqdataformats::Fragment>, std::string>>(name)
+    : DummyConsumer<std::unique_ptr<dunedaq::daqdataformats::Fragment>>(name)
   {}
 
-  void packet_callback(std::pair<std::unique_ptr<dunedaq::daqdataformats::Fragment>, std::string>& packet) override
+  void packet_callback(std::unique_ptr<dunedaq::daqdataformats::Fragment>& packet) override
   {
-    dunedaq::daqdataformats::FragmentHeader header = packet.first->get_header();
+    dunedaq::daqdataformats::FragmentHeader header = packet->get_header();
     TLOG_DEBUG(TLVL_WORK_STEPS) << header;
-    validate(*packet.first.get());
+    validate(*packet.get());
   }
 
   // Only does wib and daphne validation for now
