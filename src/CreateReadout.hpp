@@ -53,10 +53,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   namespace fdt = dunedaq::fdreadoutlibs::types;
   namespace ndt = dunedaq::ndreadoutlibs::types;
 
-  auto queues = args.get<appfwk::app::ModInit>().qinfos;
+  auto queues = args.get<appfwk::app::ModInit>().conn_refs;
   for (const auto& qi : queues) {
     if (qi.name == "raw_input") {
-      auto& inst = qi.inst;
+      auto& inst = qi.uid;
 
       // IF WIB
       if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos) {

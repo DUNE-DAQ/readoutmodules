@@ -60,7 +60,7 @@ daq_add_plugin(DataRecorder duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_
 daq_add_plugin(FragmentConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(TimeSyncConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(ErroredFrameConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
-daq_add_plugin(FragmentSender duneDAQModule LINK_LIBRARIES readoutmodules)
+#daq_add_plugin(FragmentSender duneDAQModule LINK_LIBRARIES readoutmodules)
 
 ##############################################################################
 # Integration tests

@@ -50,8 +50,8 @@ FakeCardReader::init(const data_t& args)
 {
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering init() method";
   auto ini = args.get<appfwk::app::ModInit>();
-  for (const auto& qi : ini.qinfos) {
-    if (qi.dir != "output") {
+  for (const auto& qi : ini.conn_refs) {
+    if (qi.dir != iomanager::connection::Direction::kOutput) {
       continue;
     }
 
@@ -66,12 +66,12 @@ FakeCardReader::init(const data_t& args)
         throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
       }
       m_source_emus[qi.name]->init(args);
-      m_source_emus[qi.name]->set_sink(qi.inst);
+      m_source_emus[qi.name]->set_sender(qi.uid);
     } catch (const ers::Issue& excpt) {
       throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_name(), excpt);
     }
   }
-  TLOG_DEBUG(TLVL_BOOKKEEPING) << "Number of WIB output queues: " << m_output_queues.size();
+  TLOG_DEBUG(TLVL_BOOKKEEPING) << "Number of WIB output queues: " << m_data_senders.size();
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting init() method";
 }
 

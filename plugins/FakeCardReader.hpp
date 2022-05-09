@@ -24,7 +24,7 @@
 
 // appfwk
 #include "appfwk/DAQModule.hpp"
-#include "appfwk/DAQSink.hpp"
+#include "iomanager/IOManager.hpp"
 
 // std
 #include <cstdint>
@@ -55,7 +55,7 @@ public:
   void get_info(opmonlib::InfoCollector& ci, int level) override;
 
 private:
-  using sink_t = appfwk::DAQSink<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>;
+  using sink_t = iomanager::SenderConcept<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>;
   // Commands
   void do_conf(const data_t& /*args*/);
   void do_scrap(const data_t& /*args*/);
@@ -71,9 +71,8 @@ private:
 
   std::map<std::string, std::unique_ptr<readoutlibs::SourceEmulatorConcept>> m_source_emus;
 
-  // appfwk Queues
-  std::chrono::milliseconds m_queue_timeout_ms;
-  std::vector<sink_t*> m_output_queues;
+  // data senders
+  std::vector<sink_t*> m_data_senders;
 
   // Internals
   std::unique_ptr<readoutlibs::FileSourceBuffer> m_source_buffer;

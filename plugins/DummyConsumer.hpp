@@ -10,7 +10,7 @@
 #define READOUTMODULES_PLUGINS_DUMMYCONSUMER_HPP_
 
 #include "appfwk/DAQModule.hpp"
-#include "appfwk/DAQSource.hpp"
+#include "iomanager/IOManager.hpp"
 #include "dfmessages/TimeSync.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "readoutlibs/utils/ReusableThread.hpp"
@@ -48,8 +48,8 @@ private:
   void do_work();
 
   // Queue
-  using source_t = dunedaq::appfwk::DAQSource<T>;
-  std::unique_ptr<source_t> m_input_queue;
+  using source_t = dunedaq::iomanager::ReceiverConcept<T>;
+  std::shared_ptr<source_t> m_data_receiver;
 
   // Threading
   readoutlibs::ReusableThread m_work_thread;

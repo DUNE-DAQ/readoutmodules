@@ -10,7 +10,6 @@
 #define READOUTMODULES_PLUGINS_DATARECORDER_HPP_
 
 #include "appfwk/DAQModule.hpp"
-#include "appfwk/DAQSource.hpp"
 #include "utilities/WorkerThread.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "readoutlibs/concepts/RecorderConcept.hpp"
