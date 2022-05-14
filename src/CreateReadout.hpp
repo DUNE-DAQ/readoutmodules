@@ -109,7 +109,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
-      if (inst.find("sw_tp") != std::string::npos) {
+      // SW TP or FW TP
+      if (inst.find("sw_tp") != std::string::npos 
+          || inst.find("fw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
@@ -144,18 +146,6 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return std::move(readout_model);
-      }
-      // FW TP
-       if (inst.find("fw_tp") != std::string::npos) {
-        TLOG(TLVL_WORK_STEPS) << "Creating readout for fw tp";
-        auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::EmptyFragmentRequestHandlerModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-                                                rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
-          rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-          fdl::SWWIBTriggerPrimitiveProcessor>>(run_marker);
-        readout_model->init(args);
-        return readout_model;
       }
 
       // IF ND LAr PACMAN
