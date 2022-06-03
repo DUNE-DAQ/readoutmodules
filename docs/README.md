@@ -8,7 +8,6 @@ How to clone and build DUNE DAQ packages, including `readoutmodules`, is covered
 Before running the application, please download a small binary file that contains WIB Frames from the following [CERNBox link](https://cernbox.cern.ch/index.php/s/7qNnuxD8igDOVJT), or from the commandline:
 
     curl https://cernbox.cern.ch/index.php/s/0XzhExSIMQJUsp0/download -o frames.bin
-
     
 For WIB2 frames, download the following file that contains 120 WIB-2 Frames from the following [CERNBox link](https://cernbox.cern.ch/index.php/s/ocrHxSU8PucxphE), or like so:
 
