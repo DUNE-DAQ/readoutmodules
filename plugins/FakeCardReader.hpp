@@ -20,7 +20,6 @@
 #include "readoutlibs/utils/ReusableThread.hpp"
 //#include "CreateSourceEmulator.hpp"
 #include "readoutlibs/utils/FileSourceBuffer.hpp"
-#include "readoutlibs/utils/RateLimiter.hpp"
 
 // appfwk
 #include "appfwk/DAQModule.hpp"
