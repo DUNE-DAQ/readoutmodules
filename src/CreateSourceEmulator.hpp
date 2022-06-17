@@ -14,6 +14,7 @@
 
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
+#include "readoutlibs/models/TDECrateSourceEmulatorModel.hpp"
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
@@ -43,6 +44,10 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   static constexpr int wib2_time_tick_diff = 32;
   static constexpr double wib2_dropout_rate = 0.0;
   static constexpr double wib2_rate_khz = 166.0;
+
+  static constexpr int tde_time_tick_diff = 1000;
+  static constexpr double tde_dropout_rate = 0.0;
+  static constexpr double tde_rate_khz = 0.43668;
 
   static constexpr double emu_frame_error_rate = 0.0;
 
@@ -80,6 +85,14 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("tp") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tp link";
     auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
+    return source_emu_model;
+  }
+
+  // IF TDE
+  if (inst.find("tde") != std::string::npos) {
+    auto source_emu_model =
+      std::make_unique<readoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDE_AMC_CHUNK>>(
+        qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
     return source_emu_model;
   }
 
