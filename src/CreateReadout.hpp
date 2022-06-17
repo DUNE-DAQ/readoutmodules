@@ -31,6 +31,7 @@
 #include "fdreadoutlibs/wib/SWWIBTriggerPrimitiveProcessor.hpp"
 #include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
 #include "fdreadoutlibs/wib2/WIB2FrameProcessor.hpp"
+#include "fdreadoutlibs/tde/TDEFrameProcessor.hpp"
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "ndreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 #include "ndreadoutlibs/pacman/PACMANListRequestHandler.hpp"
@@ -153,6 +154,19 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
                                              ndreadoutlibs::PACMANListRequestHandler,
                                              rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
                                              ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
+      // If TDE
+      if (inst.find("tde") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
+        auto readout_model = std::make_unique<
+          rol::ReadoutModel<fdt::TDE_AMC_CHUNK,
+                            rol::DefaultRequestHandlerModel<fdt::TDE_AMC_CHUNK,
+                                                            rol::FixedRateQueueModel<fdt::TDE_AMC_CHUNK>>,
+                            rol::FixedRateQueueModel<fdt::TDE_AMC_CHUNK>,
+                            fdl::TDEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
       }
