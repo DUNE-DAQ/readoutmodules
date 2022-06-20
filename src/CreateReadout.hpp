@@ -162,10 +162,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("tde") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::TDE_AMC_CHUNK,
-                            rol::DefaultRequestHandlerModel<fdt::TDE_AMC_CHUNK,
-                                                            rol::FixedRateQueueModel<fdt::TDE_AMC_CHUNK>>,
-                            rol::FixedRateQueueModel<fdt::TDE_AMC_CHUNK>,
+          rol::ReadoutModel<fdt::TDE_AMC_STRUCT,
+                            rol::DefaultRequestHandlerModel<fdt::TDE_AMC_STRUCT,
+                                                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>>,
+                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>,
                             fdl::TDEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;

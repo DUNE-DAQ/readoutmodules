@@ -91,7 +91,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   // IF TDE
   if (inst.find("tde") != std::string::npos) {
     auto source_emu_model =
-      std::make_unique<readoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDE_AMC_CHUNK>>(
+      std::make_unique<readoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDE_AMC_STRUCT>>(
         qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
     return source_emu_model;
   }
