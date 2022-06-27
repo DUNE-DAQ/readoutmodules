@@ -75,6 +75,14 @@ DataRecorder::init(const data_t& args)
       return;
     }
 
+    // IF TDE
+    if (inst.find("tde") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for tde";
+      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::TDE_AMC_STRUCT >(get_name()));
+      recorder->init(args);
+      return;
+    }
+
     throw readoutlibs::DataRecorderConfigurationError(ERS_HERE, "Could not create DataRecorder of type " + inst);
 
   } catch (const ers::Issue& excpt) {
