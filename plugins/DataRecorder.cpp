@@ -46,7 +46,7 @@ DataRecorder::init(const data_t& args)
     // IF WIB2
     if (inst.find("wib2") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib2";
-      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
       recorder->init(args);
       return;
     }
@@ -54,7 +54,7 @@ DataRecorder::init(const data_t& args)
     // IF WIB
     if (inst.find("wib") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib";
-      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>(get_name()));
       recorder->init(args);
       return;
     }
@@ -62,7 +62,7 @@ DataRecorder::init(const data_t& args)
     // IF PDS
     if (inst.find("pds") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pds";
-      recorder.reset(new readoutlibs::RecorderImpl<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>(get_name()));
       recorder->init(args);
       return;
     }
@@ -70,7 +70,7 @@ DataRecorder::init(const data_t& args)
     // IF PACMAN
     if (inst.find("pacman") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pacman";
-      recorder.reset(new readoutlibs::RecorderImpl<ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT>(get_name()));
       recorder->init(args);
       return;
     }
