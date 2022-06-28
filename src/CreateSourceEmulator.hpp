@@ -51,11 +51,12 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
 
   static constexpr double emu_frame_error_rate = 0.0;
 
-  auto& inst = qi.uid;
+  auto connid = iomanager::IOManager::get()->ref_to_id(qi);
+  auto datatype = connid.data_type;
 
   // IF WIB2
-  if (inst.find("wib2") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib2 link";
+  if (datatype.find("WIB2_SUPERCHUNK_STRUCT") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake WIB2 link";
 
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>>(
@@ -64,35 +65,35 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   }
 
   // IF WIB
-  if (inst.find("wib") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
+  if (datatype.find("WIB_SUPERCHUNK_STRUCT") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake WIB link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>>(
         qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz);
     return source_emu_model;
   }
 
-  // IF PDS
-  if (inst.find("pds") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
+  // IF DAPHNE
+  if (datatype.find("DAPHNE_SUPERCHUNK_STRUCT") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake DAPHNE link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>>(
         qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz);
     return source_emu_model;
   }
 
-  // TP link
-  if (inst.find("tp") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tp link";
-    auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
-    return source_emu_model;
-  }
-
   // IF TDE
-  if (inst.find("tde") != std::string::npos) {
+  if (datatype.find("TDE_AMC_STRUCT") != std::string::npos) {
     auto source_emu_model =
       std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDE_AMC_STRUCT>>(
         qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
+    return source_emu_model;
+  }
+
+  // FW TP link
+  if (datatype.find("RAW_WIB_TRIGGERPRIMITIVE_STRUCT") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake firmware TP link";
+    auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
     return source_emu_model;
   }
 

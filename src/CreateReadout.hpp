@@ -58,10 +58,12 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   for (const auto& qi : queues) {
     if (qi.name == "raw_input") {
       auto& inst = qi.uid;
+      auto connid = iomanager::IOManager::get()->ref_to_id(qi);
+      auto datatype = connid.data_type;
 
       // IF WIB
-      if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos) {
-        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib";
+      if (datatype.find("WIB_SUPERCHUNK_STRUCT") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout model for a WIB";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::WIB_SUPERCHUNK_STRUCT,
           rol::ZeroCopyRecordingRequestHandlerModel<fdt::WIB_SUPERCHUNK_STRUCT,
@@ -73,8 +75,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       }
 
       // IF WIB2
-      if (inst.find("wib2") != std::string::npos) {
-        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib2";
+      if (datatype.find("WIB2_SUPERCHUNK_STRUCT") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout model for a WIB2";
         auto readout_model = std::make_unique<
           rol::ReadoutModel<fdt::WIB2_SUPERCHUNK_STRUCT,
                             rol::DefaultRequestHandlerModel<fdt::WIB2_SUPERCHUNK_STRUCT,
@@ -86,8 +88,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       }
 
       // IF DAPHNE queue
-      if (inst.find("pds_queue") != std::string::npos) {
-        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using Searchable Queue";
+      if (datatype.find("DAPHNE_SUPERCHUNK_STRUCT") != std::string::npos && 
+          inst.find("pds_queue") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout model for a DAPHNE using Searchable Queue LB";
         auto readout_model = std::make_unique<
           rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
                             rol::DefaultRequestHandlerModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
@@ -98,9 +101,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
-      // IF PDS skiplist
-      if (inst.find("pds_list") != std::string::npos) {
-        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using SkipList LB";
+      if (datatype.find("DAPHNE_SUPERCHUNK_STRUCT") != std::string::npos &&
+          inst.find("pds_list") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout model for DAPHNE using SkipList LB";
         auto readout_model =
           std::make_unique<rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
                                              fdl::DAPHNEListRequestHandler,
@@ -110,8 +113,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
-      if (inst.find("sw_tp") != std::string::npos) {
-        TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
+      if (datatype.find("SW_WIB_TRIGGERPRIMITIVE_STRUCT") != std::string::npos) {
+        TLOG(TLVL_WORK_STEPS) << "Creating readout model for software TPs";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
           rol::EmptyFragmentRequestHandlerModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
@@ -123,8 +126,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       }
 
       // IF SSP
-      if (inst.find("ssp") != std::string::npos) {
-        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a SSPs using Searchable Queue";
+      if (datatype.find("SSP_FRAME_STRUCT") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout model for SSP";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::SSP_FRAME_STRUCT,
           rol::DefaultRequestHandlerModel<fdt::SSP_FRAME_STRUCT, rol::BinarySearchQueueModel<fdt::SSP_FRAME_STRUCT>>,
@@ -134,7 +137,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
-      if (inst.find("raw_tp") != std::string::npos) {
+      if (datatype.find("RAW_WIB_TRIGGERPRIMITIVE_STRUCT") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for raw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
@@ -147,7 +150,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       }
 
       // IF ND LAr PACMAN
-      if (inst.find("pacman") != std::string::npos) {
+      if (datatype.find("PACMAN_MESSAGE_STRUCT") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pacman";
         auto readout_model =
           std::make_unique<rol::ReadoutModel<ndt::PACMAN_MESSAGE_STRUCT,
@@ -159,7 +162,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       }
 
       // If TDE
-      if (inst.find("tde") != std::string::npos) {
+      if (datatype.find("TDE_AMC_STRUCT") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
         auto readout_model = std::make_unique<
           rol::ReadoutModel<fdt::TDE_AMC_STRUCT,
