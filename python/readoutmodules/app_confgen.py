@@ -466,7 +466,7 @@ def generate(
     print("=" * 80 + "\nStart\n\n", jstr)
 
     stopcmd = mrccmd(
-        "stop",
+        "stop_trigger_sources",
         "RUNNING",
         "CONFIGURED",
         [

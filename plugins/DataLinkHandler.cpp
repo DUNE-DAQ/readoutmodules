@@ -32,7 +32,7 @@ DataLinkHandler::DataLinkHandler(const std::string& name)
   register_command("conf", &DataLinkHandler::do_conf);
   register_command("scrap", &DataLinkHandler::do_scrap);
   register_command("start", &DataLinkHandler::do_start);
-  register_command("stop", &DataLinkHandler::do_stop);
+  register_command("stop_trigger_sources", &DataLinkHandler::do_stop);
   register_command("record", &DataLinkHandler::do_record);
 }
 

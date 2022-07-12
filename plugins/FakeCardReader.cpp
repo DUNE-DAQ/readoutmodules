@@ -43,7 +43,7 @@ FakeCardReader::FakeCardReader(const std::string& name)
   register_command("conf", &FakeCardReader::do_conf);
   register_command("scrap", &FakeCardReader::do_scrap);
   register_command("start", &FakeCardReader::do_start);
-  register_command("stop", &FakeCardReader::do_stop);
+  register_command("stop_trigger_sources", &FakeCardReader::do_stop);
 }
 
 void
