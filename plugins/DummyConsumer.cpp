@@ -29,7 +29,7 @@ DummyConsumer<T>::DummyConsumer(const std::string& name)
   , m_work_thread(0)
 {
   register_command("start", &DummyConsumer::do_start);
-  register_command("stop", &DummyConsumer::do_stop);
+  register_command("stop_trigger_sources", &DummyConsumer::do_stop);
 }
 
 template<class T>

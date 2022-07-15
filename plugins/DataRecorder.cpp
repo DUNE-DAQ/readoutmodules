@@ -33,7 +33,7 @@ DataRecorder::DataRecorder(const std::string& name)
   register_command("conf", &DataRecorder::do_conf);
   register_command("scrap", &DataRecorder::do_scrap);
   register_command("start", &DataRecorder::do_start);
-  register_command("stop", &DataRecorder::do_stop);
+  register_command("stop_trigger_sources", &DataRecorder::do_stop);
 }
 
 void
