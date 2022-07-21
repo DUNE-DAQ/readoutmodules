@@ -31,6 +31,8 @@ import click
 @click.option("-t", "--number-of-tp-producers", default=0)
 @click.option("-s", "--data-rate-slowdown-factor", default=10)
 @click.option("-g", "--enable-software-tpg", is_flag=True)
+@click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
+@click.option("-c", "--fwtp_stitch_constant", default=1600)
 @click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
 @click.option("--tp-data-file", type=click.Path(), default="./tp_frames.bin")
 @click.option(
@@ -56,6 +58,8 @@ def cli(
     number_of_tp_producers,
     data_rate_slowdown_factor,
     enable_software_tpg,
+    channel_map_name,
+    fwtp_stitch_constant,
     data_file,
     tp_data_file,
     opmon_impl,
