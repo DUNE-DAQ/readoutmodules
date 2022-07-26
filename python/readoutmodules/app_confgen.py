@@ -32,6 +32,8 @@ def generate(
     NUMBER_OF_TP_PRODUCERS=1,
     DATA_RATE_SLOWDOWN_FACTOR=1,
     ENABLE_SOFTWARE_TPG=False,
+    CHANNEL_MAP_NAME="ProtoDUNESP1ChannelMap", 
+    FWTP_STITCH_CONSTANT=1600,
     RUN_NUMBER=333,
     DATA_FILE="./frames.bin",
     TP_DATA_FILE="./tp_frames.bin",
@@ -77,7 +79,7 @@ def generate(
         if ENABLE_SOFTWARE_TPG:
             queues += [Queue(f"datahandler_{idx}.tp_out",f"sw_tp_handler_{idx}.raw_input",f"sw_tp_link_{idx}",100000 )]                
                 
-        if FRONTEND_TYPE == 'wib':
+        if FRONTEND_TYPE == 'wib' and NUMBER_OF_DATA_PRODUCERS != 0:
             queues += [Queue(f"datahandler_{idx}.errored_frames", 'errored_frame_consumer.input_queue', "errored_frames_q", 10000)]
 
         modules += [DAQModule(name=f"datahandler_{idx}", plugin="DataLinkHandler", conf=rconf.Conf(
@@ -100,6 +102,8 @@ def generate(
                         region_id=0,
                         element_id=idx,
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
+                        channel_map_name=CHANNEL_MAP_NAME,
+                        fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
                         error_counter_threshold=100,
                         error_reset_freq=10000,
                     ),
@@ -138,6 +142,8 @@ def generate(
                         region_id=0,
                         element_id=idx,
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
+                        channel_map_name=CHANNEL_MAP_NAME,
+                        fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
                     ),
                     requesthandlerconf=rconf.RequestHandlerConf(
                         latency_buffer_size=3
@@ -173,6 +179,8 @@ def generate(
                         region_id=0,
                         element_id=idx,
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
+                        channel_map_name=CHANNEL_MAP_NAME,
+                        fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
                     ),
                     requesthandlerconf=rconf.RequestHandlerConf(
                         latency_buffer_size=3
@@ -192,7 +200,7 @@ def generate(
     modules += [DAQModule(name="timesync_consumer", plugin="TimeSyncConsumer")]
     modules += [DAQModule(name="fragment_consumer", plugin="FragmentConsumer")]
 
-    if FRONTEND_TYPE == 'wib':
+    if FRONTEND_TYPE == 'wib' and NUMBER_OF_DATA_PRODUCERS != 0:
         modules += [DAQModule(name="errored_frame_consumer", plugin="ErroredFrameConsumer")]
 
     mgraph = ModuleGraph(modules, queues=queues)
