@@ -67,9 +67,13 @@ find . -name readoutapp_gen -type f -print
 readoutapp_gen -h
 ```
 
-4. Generate configuration (TP links only, WIB2 format)
+4a. WIB2
 ```
 readoutapp_gen -n 0 -t 1 -c 2048 -m VDColdboxChannelMap tpapp.json
+```
+4b. WIB1 (currently default)
+```
+readoutapp_gen -n 0 -t 1 tpapp.json
 ```
 
 5. Run test job with nanorc
