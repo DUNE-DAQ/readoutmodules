@@ -78,7 +78,7 @@ rm -Rf RunConf_1; nanorc tpapp.json test boot conf start_run 001 wait 10 stop_ru
 ```
 
 The fix in branch https://github.com/DUNE-DAQ/readoutmodules/tree/hristova/tp_appconfgen_fix
-allows the WIB2 configuration options to be used._
+allows the WIB2 configuration options to be used.
 
 
 
