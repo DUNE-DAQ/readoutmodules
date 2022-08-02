@@ -33,7 +33,7 @@ import click
 @click.option("-g", "--enable-software-tpg", is_flag=True)
 @click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
 @click.option("-c", "--fwtp_stitch_constant", default=1600)
-@click.option("-v", "--fwtp_format_version", default=1600)
+@click.option("-v", "--fwtp_format_version", default=1)
 @click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
 @click.option("--tp-data-file", type=click.Path(), default="./tp_frames.bin")
 @click.option(
