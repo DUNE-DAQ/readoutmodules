@@ -123,6 +123,8 @@ def cli(
     NUMBER_OF_TP_PRODUCERS=number_of_tp_producers,
     DATA_RATE_SLOWDOWN_FACTOR=data_rate_slowdown_factor,
     ENABLE_SOFTWARE_TPG=enable_software_tpg,
+    CHANNEL_MAP_NAME=channel_map_name,
+    FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
     DATA_FILE=data_file,
     TP_DATA_FILE=tp_data_file,
     HOST=host)
