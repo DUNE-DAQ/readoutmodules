@@ -34,6 +34,7 @@ def generate(
     ENABLE_SOFTWARE_TPG=False,
     CHANNEL_MAP_NAME="ProtoDUNESP1ChannelMap", 
     FWTP_STITCH_CONSTANT=1600,
+    FWTP_FORMAT_VERSION=1,
     RUN_NUMBER=333,
     DATA_FILE="./frames.bin",
     TP_DATA_FILE="./tp_frames.bin",
@@ -104,6 +105,7 @@ def generate(
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
                         channel_map_name=CHANNEL_MAP_NAME,
                         fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
+                        fwtp_format_version=FWTP_FORMAT_VERSION,
                         error_counter_threshold=100,
                         error_reset_freq=10000,
                     ),
@@ -144,6 +146,7 @@ def generate(
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
                         channel_map_name=CHANNEL_MAP_NAME,
                         fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
+                        fwtp_format_version=FWTP_FORMAT_VERSION,
                     ),
                     requesthandlerconf=rconf.RequestHandlerConf(
                         latency_buffer_size=3
@@ -181,6 +184,7 @@ def generate(
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
                         channel_map_name=CHANNEL_MAP_NAME,
                         fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
+                        fwtp_format_version=FWTP_FORMAT_VERSION,
                     ),
                     requesthandlerconf=rconf.RequestHandlerConf(
                         latency_buffer_size=3
