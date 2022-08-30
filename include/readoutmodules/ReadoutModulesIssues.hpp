@@ -8,7 +8,7 @@
 #ifndef READOUTMODULES_INCLUDE_READOUT_READOUTISSUES_HPP_
 #define READOUTMODULES_INCLUDE_READOUT_READOUTISSUES_HPP_
 
-#include "daqdataformats/GeoID.hpp"
+#include "daqdataformats/SourceID.hpp"
 
 #include <ers/Issue.hpp>
 
@@ -18,12 +18,12 @@ namespace dunedaq {
 ERS_DECLARE_ISSUE(readoutmodules,
                   InternalError,
                   "GeoID[" << geoid << "] Internal Error: " << error,
-                  ((daqdataformats::GeoID)geoid)((std::string)error))
+                  ((daqdataformats::SourceID)geoid)((std::string)error))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   CommandError,
                   "GeoID[" << geoid << "] Command Error: " << commanderror,
-                  ((daqdataformats::GeoID)geoid)((std::string)commanderror))
+                  ((daqdataformats::SourceID)geoid)((std::string)commanderror))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   InitializationError,
@@ -33,7 +33,7 @@ ERS_DECLARE_ISSUE(readoutmodules,
 ERS_DECLARE_ISSUE(readoutmodules,
                   ConfigurationError,
                   "GeoID[" << geoid << "] Readout Configuration Error: " << conferror,
-                  ((daqdataformats::GeoID)geoid)((std::string)conferror))
+                  ((daqdataformats::SourceID)geoid)((std::string)conferror))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   BufferedReaderWriterConfigurationError,
@@ -61,7 +61,7 @@ ERS_DECLARE_ISSUE_BASE(readoutmodules,
                        CannotReadFile,
                        readoutmodules::ConfigurationError,
                        " Couldn't read properly the binary file: " << filename << " Cause: " << errorstr,
-                       ((daqdataformats::GeoID)geoid)((std::string)filename),
+                       ((daqdataformats::SourceID)geoid)((std::string)filename),
                        ((std::string)errorstr))
 
 ERS_DECLARE_ISSUE(readoutmodules, CannotWriteToFile, "Could not write to file: " << filename, ((std::string)filename))
@@ -69,33 +69,33 @@ ERS_DECLARE_ISSUE(readoutmodules, CannotWriteToFile, "Could not write to file: "
 ERS_DECLARE_ISSUE(readoutmodules,
                   PostprocessingNotKeepingUp,
                   "GeoID[" << geoid << "] Postprocessing has too much backlog, thread: " << i,
-                  ((daqdataformats::GeoID)geoid)((size_t)i))
+                  ((daqdataformats::SourceID)geoid)((size_t)i))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   EmptySourceBuffer,
                   "GeoID[" << geoid << "] Source Buffer is empty, check file: " << filename,
-                  ((daqdataformats::GeoID)geoid)((std::string)filename))
+                  ((daqdataformats::SourceID)geoid)((std::string)filename))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   CannotReadFromQueue,
                   "GeoID[" << geoid << "] Failed attempt to read from the queue: " << queuename,
-                  ((daqdataformats::GeoID)geoid)((std::string)queuename))
+                  ((daqdataformats::SourceID)geoid)((std::string)queuename))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   CannotWriteToQueue,
                   "GeoID[" << geoid << "] Failed attempt to write to the queue: " << queuename
                            << ". Data will be lost!",
-                  ((daqdataformats::GeoID)geoid)((std::string)queuename))
+                  ((daqdataformats::SourceID)geoid)((std::string)queuename))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   TrmWithEmptyFragment,
                   "GeoID[" << geoid << "] Trigger Matching result with empty fragment: " << trmdetails,
-                  ((daqdataformats::GeoID)geoid)((std::string)trmdetails))
+                  ((daqdataformats::SourceID)geoid)((std::string)trmdetails))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   RequestOnEmptyBuffer,
                   "GeoID[" << geoid << "] Request on empty buffer: " << trmdetails,
-                  ((daqdataformats::GeoID)geoid)((std::string)trmdetails))
+                  ((daqdataformats::SourceID)geoid)((std::string)trmdetails))
 
 ERS_DECLARE_ISSUE_BASE(readoutmodules,
                        FailedReadoutInitialization,
@@ -113,7 +113,7 @@ ERS_DECLARE_ISSUE_BASE(readoutmodules,
                        NoImplementationAvailableError,
                        readoutmodules::ConfigurationError,
                        " No " << impl << " implementation available for raw type: " << rawt << ' ',
-                       ((daqdataformats::GeoID)geoid)((std::string)impl),
+                       ((daqdataformats::SourceID)geoid)((std::string)impl),
                        ((std::string)rawt))
 
 ERS_DECLARE_ISSUE(readoutmodules,
@@ -141,17 +141,17 @@ ERS_DECLARE_ISSUE(readoutmodules,
 ERS_DECLARE_ISSUE(readoutmodules,
                   ConfigurationProblem,
                   "GeoID[" << geoid << "] Configuration problem: " << text,
-                  ((daqdataformats::GeoID)geoid)((std::string)text))
+                  ((daqdataformats::SourceID)geoid)((std::string)text))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   RequestTimedOut,
                   "GeoID[" << geoid << "] Request timed out",
-                  ((daqdataformats::GeoID)geoid))
+                  ((daqdataformats::SourceID)geoid))
 
 ERS_DECLARE_ISSUE(readoutmodules,
                   EndOfRunEmptyFragment,
                   "GeoID[" << geoid << "] Empty fragment at the end of the run",
-                  ((daqdataformats::GeoID)geoid))
+                  ((daqdataformats::SourceID)geoid))
 
 } // namespace dunedaq
 

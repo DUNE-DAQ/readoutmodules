@@ -47,7 +47,7 @@ public:
       TLOG() << "Encountered empty fragment";
       return;
     } else if ((fragment.get_header().fragment_type ==
-                static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kTPCData)) ||
+                static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kProtoWIB)) ||
                (static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
       int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / sizeof(detdataformats::wib::WIBFrame);
       auto window_begin = fragment.get_header().window_begin;
@@ -73,7 +73,7 @@ public:
         }
       }
     } else if (fragment.get_header().fragment_type ==
-               static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kPDSData)) {
+               static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kDAPHNE)) {
       int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / 584;
 
       for (int i = 0; i < num_frames; ++i) {
