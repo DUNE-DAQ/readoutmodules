@@ -49,13 +49,13 @@ public:
     } else if ((fragment.get_header().fragment_type ==
                 static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kProtoWIB)) ||
                (static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
-      int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / 464;
+      int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / sizeof(detdataformats::wib::WIBFrame);
       auto window_begin = fragment.get_header().window_begin;
       auto window_end = fragment.get_header().window_end;
 
       detdataformats::wib::WIBFrame* first_frame = static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data());
       detdataformats::wib::WIBFrame* last_frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
-        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * 464);                          // NOLINT
+        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * sizeof(detdataformats::wib::WIBFrame));                          // NOLINT
 
       if (!((first_frame->get_timestamp() >= window_begin) && (first_frame->get_timestamp() < window_begin + 25))) {
         TLOG() << "First fragment not correctly aligned";
@@ -66,7 +66,7 @@ public:
 
       for (int i = 0; i < num_frames; ++i) {
         detdataformats::wib::WIBFrame* frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
-          static_cast<char*>(fragment.get_data()) + (i * 464));
+          static_cast<char*>(fragment.get_data()) + (i * sizeof(detdataformats::wib::WIBFrame)));
         if (frame->get_timestamp() < fragment.get_header().window_begin ||
             frame->get_timestamp() >= fragment.get_header().window_end) {
           TLOG() << "Fragment validation encountered frame not fitting the requested window";
