@@ -11,6 +11,7 @@ from os.path import exists, join
 from daqconf.core.system import System
 from daqconf.core.conf_utils import make_app_command_data
 from daqconf.core.metadata import write_metadata_file
+from daqconf.core.sourceid import *
 
 # Add -h as default help option
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -33,6 +34,7 @@ import click
 @click.option("-g", "--enable-software-tpg", is_flag=True)
 @click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
 @click.option("-c", "--fwtp_stitch_constant", default=1600)
+@click.option("-v", "--fwtp_format_version", default=1)
 @click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
 @click.option("--tp-data-file", type=click.Path(), default="./tp_frames.bin")
 @click.option(
@@ -60,6 +62,7 @@ def cli(
     enable_software_tpg,
     channel_map_name,
     fwtp_stitch_constant,
+    fwtp_format_version,
     data_file,
     tp_data_file,
     opmon_impl,
@@ -74,6 +77,18 @@ def cli(
 
     console.log("Loading app_confgen config generator")
     from readoutmodules import app_confgen
+
+    #hw_map_service = HardwareMapService(hardware_map_file)
+    hw_map_service = HardwareMapService("my_hw_map.txt")
+    dro_infos = hw_map_service.get_all_dro_info()
+    sourceid_broker = SourceIDBroker()
+    #sourceid_broker.debug = debug
+    sourceid_broker.register_readout_source_ids(dro_infos)
+    tp_mode = get_tpg_mode(TPGenMode.FWTPG,False)
+    sourceid_broker.generate_trigger_source_ids(dro_infos, tp_mode)
+    tp_infos = sourceid_broker.get_all_source_ids("Trigger")
+    for dro_info in dro_infos:
+        console.log(f"Will start a RU process on {dro_info.host} reading card number {dro_info.card}, {len(dro_info.links)} links active")
 
     the_system = System()
 
@@ -118,6 +133,7 @@ def cli(
         ers_settings["FATAL"] = "erstrace,lstdout"
 
     # add app
+    '''
     the_system.apps["readout_app"] = app_confgen.generate(FRONTEND_TYPE=frontend_type,
     NUMBER_OF_DATA_PRODUCERS=number_of_data_producers,
     NUMBER_OF_TP_PRODUCERS=number_of_tp_producers,
@@ -125,9 +141,28 @@ def cli(
     ENABLE_SOFTWARE_TPG=enable_software_tpg,
     CHANNEL_MAP_NAME=channel_map_name,
     FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
+    FWTP_FORMAT_VERSION=fwtp_format_version,
     DATA_FILE=data_file,
     TP_DATA_FILE=tp_data_file,
     HOST=host)
+    '''
+    ru_app_names=[]
+    for dro_idx,dro_config in enumerate(dro_infos):
+        host=dro_config.host.replace("-","")
+        ru_name = f"ru{host}{dro_config.card}"
+        ru_app_names.append(ru_name)
+        the_system.apps[ru_name] = app_confgen.generate(
+            HOST=dro_config.host,
+            DRO_CONFIG=dro_config,
+            SOURCEID_BROKER = sourceid_broker,
+            DATA_RATE_SLOWDOWN_FACTOR=data_rate_slowdown_factor,
+            ENABLE_SOFTWARE_TPG=enable_software_tpg,
+            CHANNEL_MAP_NAME=channel_map_name,
+            FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
+            FWTP_FORMAT_VERSION=fwtp_format_version,
+            DATA_FILE=data_file,
+            TP_DATA_FILE=tp_data_file)
+
 
     ####################################################################
     # Application command data generation
@@ -174,7 +209,7 @@ def cli(
 
     console.log(f"Readout app config generated in {json_dir}")
 
-    write_metadata_file(json_dir, "readoutapp_gen")
+    write_metadata_file(json_dir, "readoutapp_gen", "./daqconf.ini")
 
 
 if __name__ == "__main__":

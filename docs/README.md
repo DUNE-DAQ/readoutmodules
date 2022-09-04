@@ -52,12 +52,13 @@ Testing TP standalone configuration script with dunedaq-v3.1.0:
 
 1. Download tp_frames.bin file
 ```
-curl https://cernbox.cern.ch/index.php/s/FqMXxSpM3WjgeCN/download -o tp_frames.bin
+curl https://cernbox.cern.ch/index.php/s/asyh9lHd8PhxMyI -o tp_frames.bin (old TP format, version 1)
+curl https://cernbox.cern.ch/index.php/s/QRBAANbBQNbhuYC -o tp_frames.bin (new TP format, version 2)
 ```
 
-2. Setup v3.1.0 work area and checkout branch
+2. Setup v3.2.0 development work area and checkout branch
 ```
-git clone https://github.com/DUNE-DAQ/readoutmodules.git -b hristova/tp_appconfgen_fix
+git clone https://github.com/DUNE-DAQ/readoutmodules.git -b hristova/tp_format_config_v3.2.0
 dbt-build -j16
 ```
 
@@ -69,23 +70,21 @@ readoutapp_gen -h
 
 4. Generate configuration (TP links only, WIB2 format)
 
-4a. WIB2
+4a. WIB2 (currently default)
 ```
-readoutapp_gen -n 0 -t 1 -c 2048 -m VDColdboxChannelMap tpapp.json
+readoutapp_gen -n 0 -t 1 -m VDColdboxChannelMap tpapp.json (old TP format, version 1: default)
+readoutapp_gen -n 0 -t 1 -v 2 -m VDColdboxChannelMap tpapp_v2.json (new TP format, version 2)
 ```
-4b. WIB1 (currently default)
+4b. WIB1 
 ```
-readoutapp_gen -n 0 -t 1 tpapp.json
+readoutapp_gen -n 0 -t 1 -c 1600 -m VDColdboxChannelMap tpapp.json (old TP format, version 1: default)
+readoutapp_gen -n 0 -t 1 -v 2 -c 1600 -m VDColdboxChannelMap tpapp_v2.json (new TP format, version 2)
 ```
 
 5. Run test job with nanorc
 ```
 rm -Rf RunConf_1; nanorc tpapp.json test boot conf start_run 001 wait 10 stop_run scrap terminate
 ```
-
-The fix in branch https://github.com/DUNE-DAQ/readoutmodules/tree/hristova/tp_appconfgen_fix
-allows the WIB2 configuration options to be used.
-
 
 
 ## Modules provided by readoutmodules
