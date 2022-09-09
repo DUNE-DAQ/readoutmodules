@@ -58,7 +58,8 @@ def generate(
                             source_id =  link.dro_source_id,
                             slowdown=DATA_RATE_SLOWDOWN_FACTOR,
                             queue_name=f"output_{link.dro_source_id}",
-                            data_filename=TP_DATA_FILE,
+                            data_filename=DATA_FILE,
+                            tp_data_filename=TP_DATA_FILE,
                             emu_frame_error_rate=0,
                         )
                         for link in DRO_CONFIG.links],
