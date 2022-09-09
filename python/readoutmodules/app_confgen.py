@@ -35,6 +35,7 @@ def generate(
     NUMBER_OF_TP_PRODUCERS=1,
     DATA_RATE_SLOWDOWN_FACTOR=1,
     ENABLE_SOFTWARE_TPG=False,
+    ENABLE_FIRMWARE_TPG=False,
     CHANNEL_MAP_NAME="ProtoDUNESP1ChannelMap", 
     FWTP_STITCH_CONSTANT=2048,
     FWTP_FORMAT_VERSION=1,
@@ -85,6 +86,7 @@ def generate(
                     rawdataprocessorconf=rconf.RawDataProcessorConf(
                         source_id = link.dro_source_id,
                         enable_software_tpg=ENABLE_SOFTWARE_TPG,
+                        enable_firmware_tpg=ENABLE_FIRMWARE_TPG,
                         channel_map_name=CHANNEL_MAP_NAME,
                         fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
                         fwtp_format_version=FWTP_FORMAT_VERSION,

@@ -32,6 +32,7 @@ import click
 @click.option("-t", "--number-of-tp-producers", default=0)
 @click.option("-s", "--data-rate-slowdown-factor", default=10)
 @click.option("-g", "--enable-software-tpg", is_flag=True)
+@click.option("-f", "--enable-firmware-tpg", is_flag=True)
 @click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
 @click.option("-c", "--fwtp_stitch_constant", default=1600)
 @click.option("-v", "--fwtp_format_version", default=1)
@@ -60,6 +61,7 @@ def cli(
     number_of_tp_producers,
     data_rate_slowdown_factor,
     enable_software_tpg,
+    enable_firmware_tpg,
     channel_map_name,
     fwtp_stitch_constant,
     fwtp_format_version,
@@ -139,6 +141,7 @@ def cli(
     NUMBER_OF_TP_PRODUCERS=number_of_tp_producers,
     DATA_RATE_SLOWDOWN_FACTOR=data_rate_slowdown_factor,
     ENABLE_SOFTWARE_TPG=enable_software_tpg,
+    ENABLE_FIRMWARE_TPG=enable_firmware_tpg,
     CHANNEL_MAP_NAME=channel_map_name,
     FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
     FWTP_FORMAT_VERSION=fwtp_format_version,
@@ -157,6 +160,7 @@ def cli(
             SOURCEID_BROKER = sourceid_broker,
             DATA_RATE_SLOWDOWN_FACTOR=data_rate_slowdown_factor,
             ENABLE_SOFTWARE_TPG=enable_software_tpg,
+            ENABLE_FIRMWARE_TPG=enable_firmware_tpg,
             CHANNEL_MAP_NAME=channel_map_name,
             FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
             FWTP_FORMAT_VERSION=fwtp_format_version,
