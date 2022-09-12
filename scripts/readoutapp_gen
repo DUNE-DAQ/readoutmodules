@@ -36,6 +36,7 @@ import click
 @click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
 @click.option("-c", "--fwtp_stitch_constant", default=1600)
 @click.option("-v", "--fwtp_format_version", default=1)
+@click.option("-i", "--enable-fwtp-info", is_flag=True)
 @click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
 @click.option("--tp-data-file", type=click.Path(), default="./tp_frames.bin")
 @click.option(
@@ -65,6 +66,7 @@ def cli(
     channel_map_name,
     fwtp_stitch_constant,
     fwtp_format_version,
+    enable_fwtp_info,
     data_file,
     tp_data_file,
     opmon_impl,
@@ -145,6 +147,7 @@ def cli(
     CHANNEL_MAP_NAME=channel_map_name,
     FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
     FWTP_FORMAT_VERSION=fwtp_format_version,
+    ENABLE_FWTP_INFO=enable_fwtp_info,
     DATA_FILE=data_file,
     TP_DATA_FILE=tp_data_file,
     HOST=host)
@@ -164,6 +167,7 @@ def cli(
             CHANNEL_MAP_NAME=channel_map_name,
             FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
             FWTP_FORMAT_VERSION=fwtp_format_version,
+            ENABLE_FWTP_INFO=enable_fwtp_info,
             DATA_FILE=data_file,
             TP_DATA_FILE=tp_data_file)
 

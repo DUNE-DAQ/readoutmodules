@@ -39,6 +39,7 @@ def generate(
     CHANNEL_MAP_NAME="ProtoDUNESP1ChannelMap", 
     FWTP_STITCH_CONSTANT=2048,
     FWTP_FORMAT_VERSION=1,
+    ENABLE_FWTP_INFO=False,
     RUN_NUMBER=333,
     DATA_FILE="./frames.bin",
     TP_DATA_FILE="./tp_frames.bin",
@@ -90,6 +91,7 @@ def generate(
                         channel_map_name=CHANNEL_MAP_NAME,
                         fwtp_stitch_constant=FWTP_STITCH_CONSTANT,
                         fwtp_format_version=FWTP_FORMAT_VERSION,
+                        enable_fwtp_info=ENABLE_FWTP_INFO,
                     ),
                     requesthandlerconf=rconf.RequestHandlerConf(
                         latency_buffer_size=3
