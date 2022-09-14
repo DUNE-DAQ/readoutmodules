@@ -34,7 +34,8 @@ import click
 @click.option("-g", "--enable-software-tpg", is_flag=True)
 @click.option("-f", "--enable-firmware-tpg", is_flag=True)
 @click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
-@click.option("-c", "--fwtp_stitch_constant", default=1600)
+@click.option("-t", "--fwtp_number_of_ticks", default=64)
+@click.option("-l", "--fwtp_tick_length", default=32)
 @click.option("-v", "--fwtp_format_version", default=1)
 @click.option("-i", "--enable-fwtp-info", is_flag=True)
 @click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
@@ -64,7 +65,8 @@ def cli(
     enable_software_tpg,
     enable_firmware_tpg,
     channel_map_name,
-    fwtp_stitch_constant,
+    fwtp_number_of_ticks,
+    fwtp_tick_length,
     fwtp_format_version,
     enable_fwtp_info,
     data_file,
@@ -145,7 +147,8 @@ def cli(
     ENABLE_SOFTWARE_TPG=enable_software_tpg,
     ENABLE_FIRMWARE_TPG=enable_firmware_tpg,
     CHANNEL_MAP_NAME=channel_map_name,
-    FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
+    FWTP_NUM_TICKS=fwtp_number_of_ticks,
+    FWTP_TICK_LENGTH=fwtp_tick_length,
     FWTP_FORMAT_VERSION=fwtp_format_version,
     ENABLE_FWTP_INFO=enable_fwtp_info,
     DATA_FILE=data_file,
@@ -165,7 +168,8 @@ def cli(
             ENABLE_SOFTWARE_TPG=enable_software_tpg,
             ENABLE_FIRMWARE_TPG=enable_firmware_tpg,
             CHANNEL_MAP_NAME=channel_map_name,
-            FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
+            FWTP_NUM_TICKS=fwtp_number_of_ticks,
+            FWTP_TICK_LENGTH=fwtp_tick_length,
             FWTP_FORMAT_VERSION=fwtp_format_version,
             ENABLE_FWTP_INFO=enable_fwtp_info,
             DATA_FILE=data_file,
