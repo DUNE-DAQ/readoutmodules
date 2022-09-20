@@ -11,123 +11,92 @@ from os.path import exists, join
 from daqconf.core.system import System
 from daqconf.core.conf_utils import make_app_command_data
 from daqconf.core.metadata import write_metadata_file
-
-# Add -h as default help option
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+from daqconf.core.config_file import generate_cli_from_schema
+from daqconf.core.sourceid import SourceIDBroker, get_tpg_mode
+from detchannelmaps._daq_detchannelmaps_py import HardwareMapService
 
 console = Console()
 
+# Set moo schema search path
+from dunedaq.env import get_moo_model_path
+import moo.io
+moo.io.default_load_path = get_moo_model_path()
+
 import click
 
-
+# Add -h as default help option
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.option(
-    "-f",
-    "--frontend-type",
-    type=click.Choice(["wib", "wib2", "pds_queue", "pds_list"], case_sensitive=True),
-    default="wib",
-)
-@click.option("-n", "--number-of-data-producers", default=1)
-@click.option("-t", "--number-of-tp-producers", default=0)
-@click.option("-s", "--data-rate-slowdown-factor", default=10)
-@click.option("-g", "--enable-software-tpg", is_flag=True)
-@click.option("-m", "--channel-map-name", default="ProtoDUNESP1ChannelMap")
-@click.option("-c", "--fwtp_stitch_constant", default=1600)
-@click.option("-d", "--data-file", type=click.Path(), default="./frames.bin")
-@click.option("--tp-data-file", type=click.Path(), default="./tp_frames.bin")
-@click.option(
-    "--opmon-impl",
-    type=click.Choice(["json", "cern", "pocket"], case_sensitive=False),
-    default="json",
-    help="Info collector service implementation to use",
-)
-@click.option(
-    "--ers-impl",
-    type=click.Choice(["local", "cern", "pocket"], case_sensitive=False),
-    default="local",
-    help="ERS destination (Kafka used for cern and pocket)",
-)
-@click.option(
-    "--pocket-url", default="127.0.0.1", help="URL for connecting to Pocket services"
-)
-@click.option("--host", default="localhost", help="Host to run app on")
+@generate_cli_from_schema('readoutmodules/confgen.jsonnet', 'readoutapp_gen')
 @click.argument("json_dir", type=click.Path())
-def cli(
-    frontend_type,
-    number_of_data_producers,
-    number_of_tp_producers,
-    data_rate_slowdown_factor,
-    enable_software_tpg,
-    channel_map_name,
-    fwtp_stitch_constant,
-    data_file,
-    tp_data_file,
-    opmon_impl,
-    ers_impl,
-    pocket_url,
-    json_dir,
-    host
-):
+def cli(config, json_dir):
 
     if exists(json_dir):
         raise RuntimeError(f"Directory {json_dir} already exists")
+        
+    config_data = config[0]
+    config_file = config[1]
+
+    # Get our config objects
+    # Loading this one another time... (first time in config_file.generate_cli_from_schema)
+    # The amount of shenanigans on has to go thru here is astounding
+    moo.otypes.load_types('readoutmodules/confgen.jsonnet')
+    import dunedaq.readoutmodules.confgen as confgen
+    moo.otypes.load_types('daqconf/confgen.jsonnet')
+    import dunedaq.daqconf.confgen as daqconfgen
+
+    ## Hack, we shouldn't need to do that, in the future it should be, boot = config_data.boot
+    boot = daqconfgen.boot(**config_data.boot)
+    ## etc...
+    readout = daqconfgen.readout(**config_data.readout)
+    readoutapp = confgen.readoutapp(**config_data.readoutapp)
 
     console.log("Loading app_confgen config generator")
     from readoutmodules import app_confgen
+    
+    sourceid_broker = SourceIDBroker()
 
     the_system = System()
+    
+    # Load the hw map file here to extract ru hosts, cards, slr, links, forntend types, sourceIDs and geoIDs
+    # The ru apps are determined by the combinations of hostname and card_id, the SourceID determines the
+    # DLH (with physical slr+link information), the detId acts as system_type allows to infer the frontend_type
+    hw_map_service = HardwareMapService(readout.hardware_map_file)
 
-    if opmon_impl == "cern":
-        info_svc_uri = "influx://opmondb.cern.ch:31002/write?db=influxdb"
-    elif opmon_impl == "pocket":
-        info_svc_uri = "influx://" + pocket_url + ":31002/write?db=influxdb"
-    else:
-        info_svc_uri = "file://info_${APP_NAME}_${APP_PORT}.json"
+    # Get the list of RU processes
+    dro_infos = hw_map_service.get_all_dro_info()
+    this_dro = None
+    for dro_info in dro_infos:
+        if dro_info.host == readoutapp.host and dro_info.card == readoutapp.card:
+            this_dro = dro_info
 
-    ers_settings = dict()
+    if this_dro is None:
+        raise ValueError(f"No DRO configs from HardwareMap match specified host/card!")
 
-    if ers_impl == "cern":
-        use_kafka = True
-        ers_settings[
-            "INFO"
-        ] = "erstrace,throttle,lstdout,erskafka(monkafka.cern.ch:30092)"
-        ers_settings[
-            "WARNING"
-        ] = "erstrace,throttle,lstdout,erskafka(monkafka.cern.ch:30092)"
-        ers_settings[
-            "ERROR"
-        ] = "erstrace,throttle,lstdout,erskafka(monkafka.cern.ch:30092)"
-        ers_settings["FATAL"] = "erstrace,lstdout,erskafka(monkafka.cern.ch:30092)"
-    elif ers_impl == "pocket":
-        use_kafka = True
-        ers_settings["INFO"] = (
-            "erstrace,throttle,lstdout,erskafka(" + pocket_url + ":30092)"
-        )
-        ers_settings["WARNING"] = (
-            "erstrace,throttle,lstdout,erskafka(" + pocket_url + ":30092)"
-        )
-        ers_settings["ERROR"] = (
-            "erstrace,throttle,lstdout,erskafka(" + pocket_url + ":30092)"
-        )
-        ers_settings["FATAL"] = "erstrace,lstdout,erskafka(" + pocket_url + ":30092)"
-    else:
-        use_kafka = False
-        ers_settings["INFO"] = "erstrace,throttle,lstdout"
-        ers_settings["WARNING"] = "erstrace,throttle,lstdout"
-        ers_settings["ERROR"] = "erstrace,throttle,lstdout"
-        ers_settings["FATAL"] = "erstrace,lstdout"
-
+    tp_mode = get_tpg_mode(readout.enable_firmware_tpg,readout.enable_software_tpg)
+    sourceid_broker.register_readout_source_ids([this_dro], tp_mode)
+    sourceid_broker.generate_trigger_source_ids([this_dro], tp_mode)
+    
     # add app
-    the_system.apps["readout_app"] = app_confgen.generate(FRONTEND_TYPE=frontend_type,
-    NUMBER_OF_DATA_PRODUCERS=number_of_data_producers,
-    NUMBER_OF_TP_PRODUCERS=number_of_tp_producers,
-    DATA_RATE_SLOWDOWN_FACTOR=data_rate_slowdown_factor,
-    ENABLE_SOFTWARE_TPG=enable_software_tpg,
-    CHANNEL_MAP_NAME=channel_map_name,
-    FWTP_STITCH_CONSTANT=fwtp_stitch_constant,
-    DATA_FILE=data_file,
-    TP_DATA_FILE=tp_data_file,
-    HOST=host)
+    the_system.apps["readout_app"] = app_confgen.generate(
+    DRO_CONFIG=this_dro,
+    CLOCK_SPEED_HZ=readout.clock_speed_hz,
+    DATA_RATE_SLOWDOWN_FACTOR=readout.data_rate_slowdown_factor,
+    SOFTWARE_TPG_ENABLED=readout.enable_software_tpg,
+    FIRMWARE_TPG_ENABLED=readout.enable_firmware_tpg,
+    TPG_CHANNEL_MAP=readoutapp.tpg_channel_map,
+    FWTP_STITCH_CONSTANT=readoutapp.fwtp_stitch_constant,
+    DATA_FILE=readout.data_file,
+    TP_DATA_FILE=readoutapp.tp_data_file,
+    HOST=readoutapp.host,
+    EMULATOR_MODE=readout.emulator_mode,
+    FLX_INPUT=readout.use_felix,
+    RAW_RECORDING_ENABLED=readout.enable_raw_recording,
+    RAW_RECORDING_OUTPUT_DIR=readout.raw_recording_output_dir,
+    LATENCY_BUFFER_SIZE=readout.latency_buffer_size,
+    DATA_REQUEST_TIMEOUT=boot.data_request_timeout_ms,
+    SOURCEID_BROKER =sourceid_broker,
+    DEBUG=False)
 
     ####################################################################
     # Application command data generation
@@ -140,41 +109,15 @@ def cli(
     }
 
     # Make boot.json config
-    from daqconf.core.conf_utils import (
-        make_system_command_datas,
-        generate_boot_common,
+    from daqconf.core.conf_utils import make_system_command_datas, write_json_files
 
-        write_json_files,
-    )
-
-    system_command_datas = make_system_command_datas(the_system)
-
-    boot = generate_boot_common(
-        ers_settings = ers_settings,
-        info_svc_uri = info_svc_uri,
-        disable_trace = False,
-        use_kafka = use_kafka,
-        external_connections = [],
-        daq_app_exec_name = "daq_application_ssh",
-        verbose = False,
-    )
-
-    from daqconf.core.conf_utils import update_with_ssh_boot_data
-    console.log("Generating ssh boot.json")
-    update_with_ssh_boot_data(
-        boot_data = boot,
-        apps = the_system.apps,
-        base_command_port = 3333,
-        verbose = False,
-    )
-
-    system_command_datas["boot"] = boot
+    system_command_datas = make_system_command_datas(boot, the_system, verbose=False)
 
     write_json_files(app_command_datas, system_command_datas, json_dir, verbose=True)
 
     console.log(f"Readout app config generated in {json_dir}")
 
-    write_metadata_file(json_dir, "readoutapp_gen")
+    write_metadata_file(json_dir, "readoutapp_gen", config_file)
 
 
 if __name__ == "__main__":
