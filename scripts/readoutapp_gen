@@ -85,7 +85,6 @@ def cli(config, json_dir):
     SOFTWARE_TPG_ENABLED=readout.enable_software_tpg,
     FIRMWARE_TPG_ENABLED=readout.enable_firmware_tpg,
     TPG_CHANNEL_MAP=readoutapp.tpg_channel_map,
-    FWTP_STITCH_CONSTANT=readoutapp.fwtp_stitch_constant,
     DATA_FILE=readout.data_file,
     TP_DATA_FILE=readoutapp.tp_data_file,
     HOST=readoutapp.host,
