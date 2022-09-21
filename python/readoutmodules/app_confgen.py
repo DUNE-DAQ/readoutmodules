@@ -77,9 +77,11 @@ def generate(
 
     # Hack on strings to be used for connection instances: will be solved when data_type is properly used.
 
+    FWTP_TICK_LENGTH=32
     FRONTEND_TYPE = DetID.subdetector_to_string(DetID.Subdetector(DRO_CONFIG.links[0].det_id))
     if ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 50000000):
         FRONTEND_TYPE = "wib"
+        FWTP_TICK_LENGTH=25
     elif ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 62500000):
         FRONTEND_TYPE = "wib2"
     elif FRONTEND_TYPE== "HD_PDS" or FRONTEND_TYPE== "VD_Cathode_PDS" or FRONTEND_TYPE=="VD_Membrane_PDS":
@@ -169,7 +171,7 @@ def generate(
                               plugin = card_reader,
                               conf = conf)]
         queues += [Queue(f"{fake_source}.output_{link.dro_source_id}",f"datahandler_{link.dro_source_id}.raw_input",f'{FRONTEND_TYPE}_link_{link.dro_source_id}', 100000) for link in DRO_CONFIG.links]
-        queues += [Queue(f"fake_source.output_raw_tp_{tp_link}",f"raw_tp_handler_{tp_link}.raw_input",f'raw_tp_link_{tp_link}', 100000) for tp_link in link_to_tp_sid_map.values()]
+        queues += [Queue(f"{fake_source}.output_raw_tp_{tp_link}",f"tp_datahandler_{tp_link}.raw_input",f'tp_link_{tp_link}', 100000) for tp_link in link_to_tp_sid_map.values()]
 
     errored_consumer_needed = False
     if SOFTWARE_TPG_ENABLED:
@@ -202,6 +204,7 @@ def generate(
                                       enable_software_tpg = SOFTWARE_TPG_ENABLED,
                                       channel_map_name = TPG_CHANNEL_MAP,
                                       emulator_mode = EMULATOR_MODE,
+                                      fwtp_tick_length = FWTP_TICK_LENGTH,
                                       error_counter_threshold=100,
                                       error_reset_freq=10000,
                                       tpset_topic=tpset_topic,
@@ -230,6 +233,7 @@ def generate(
                                                                                             source_id =  link_to_tp_sid_map[link.dro_source_id]),
                                                  rawdataprocessorconf = rconf.RawDataProcessorConf(source_id =  link_to_tp_sid_map[link.dro_source_id],
                                                                                                    enable_software_tpg = False,
+                                                                                                   fwtp_tick_length = FWTP_TICK_LENGTH,
                                                                                                    channel_map_name=TPG_CHANNEL_MAP),
                                                  requesthandlerconf= rconf.RequestHandlerConf(latency_buffer_size = LATENCY_BUFFER_SIZE,
                                                                                               pop_limit_pct = 0.8,
@@ -255,6 +259,7 @@ def generate(
                                                                                             source_id = sid),
                                                  rawdataprocessorconf = rconf.RawDataProcessorConf(source_id =  sid,
                                                                                                    enable_software_tpg = False,
+                                                                                                   fwtp_tick_length = FWTP_TICK_LENGTH,
                                                                                                    channel_map_name=TPG_CHANNEL_MAP),
                                                  requesthandlerconf= rconf.RequestHandlerConf(latency_buffer_size = LATENCY_BUFFER_SIZE,
                                                                                               pop_limit_pct = 0.8,
@@ -286,6 +291,7 @@ def generate(
                                           enable_firmware_tpg = True,
                                           channel_map_name = TPG_CHANNEL_MAP,
                                           emulator_mode = EMULATOR_MODE,
+                                          fwtp_tick_length = FWTP_TICK_LENGTH,
                                           error_counter_threshold=100,
                                           error_reset_freq=10000,
                                           tpset_topic="TPSets"
