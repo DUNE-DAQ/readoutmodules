@@ -383,4 +383,6 @@ def generate(
         mgraph.add_endpoint(f"requests_{link.dro_source_id}", None, Direction.OUT) # Fake request endpoint
 
     ru_app = App(modulegraph=mgraph, host=HOST, name="readout_app")
+    if DEBUG:
+        ru_app.export("readout_app.dot")
     return ru_app
