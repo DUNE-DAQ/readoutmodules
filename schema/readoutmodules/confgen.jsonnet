@@ -14,8 +14,9 @@ local cs = {
   readoutapp: s.record("readoutapp", [
     s.field('host',      daqconf.Host, default='localhost', doc='Host to run the readout app on'),
     s.field('card', self.number, default=0, doc='Card to read'),
-    s.field( "tpg_channel_map", daqconf.TPGChannelMap, default="ProtoDUNESP1ChannelMap", doc="Channel map for software TPG"),
-    s.field("fwtp_stitch_constant", self.number, default=1600),
+    s.field("tpg_channel_map", daqconf.TPGChannelMap, default="ProtoDUNESP1ChannelMap", doc="Channel map for software TPG"),
+    s.field("fwtp_number_of_ticks", self.number, default=64, doc="Number of ticks over which a firmware TP spans"),
+    s.field("fwtp_tick_length", self.number, default=32, doc="Tick length as defined by DUNE WIB"),
     s.field("tp_data_file", daqconf.Path, default='./tp_frames.bin', doc="File to read TPs from")
     
   ]),
