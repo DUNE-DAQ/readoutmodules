@@ -29,7 +29,8 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @generate_cli_from_schema('readoutmodules/confgen.jsonnet', 'readoutapp_gen')
 @click.argument("json_dir", type=click.Path())
-def cli(config, json_dir):
+@click.option('--debug', default=False, is_flag=True, help="Switch to get a lot of printout and dot files")
+def cli(config, json_dir, debug):
 
     if exists(json_dir):
         raise RuntimeError(f"Directory {json_dir} already exists")
@@ -84,6 +85,8 @@ def cli(config, json_dir):
     DATA_RATE_SLOWDOWN_FACTOR=readout.data_rate_slowdown_factor,
     SOFTWARE_TPG_ENABLED=readout.enable_software_tpg,
     FIRMWARE_TPG_ENABLED=readout.enable_firmware_tpg,
+    DTP_CONNECTIONS_FILE=readout.dtp_connections_file,
+    FIRMWARE_HIT_THRESHOLD=readout.firmware_hit_threshold,
     TPG_CHANNEL_MAP=readoutapp.tpg_channel_map,
     DATA_FILE=readout.data_file,
     TP_DATA_FILE=readoutapp.tp_data_file,
@@ -95,7 +98,7 @@ def cli(config, json_dir):
     LATENCY_BUFFER_SIZE=readout.latency_buffer_size,
     DATA_REQUEST_TIMEOUT=boot.data_request_timeout_ms,
     SOURCEID_BROKER =sourceid_broker,
-    DEBUG=False)
+    DEBUG=debug)
 
     ####################################################################
     # Application command data generation
