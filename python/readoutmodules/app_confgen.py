@@ -359,6 +359,8 @@ def generate(
             mgraph.connect_modules(f"tp_datahandler_{sid}.fragment_queue", "fragment_consumer.input_queue", "data_fragments_q", 100)
             mgraph.add_endpoint(f"tp_requests_{sid}", f"tp_datahandler_{sid}.request_input", Direction.IN)
             mgraph.add_endpoint(f"tp_requests_{sid}", None, Direction.OUT) # Fake request endpoint
+            mgraph.add_endpoint(f"tpsets_link{sid}", f"tp_datahandler_{sid}.tpset_out",    Direction.OUT, topic=["TPSets"])
+            mgraph.add_endpoint(f"tpsets_link{sid}", None,    Direction.IN, topic=["TPSets"]) # Fake TPSet endpoing
             
         for sid in fw_tp_out_id_map.values():
             mgraph.connect_modules(f"tp_out_datahandler_{sid}.timesync_output", "timesync_consumer.input_queue", "timesync_q")
@@ -373,8 +375,12 @@ def generate(
         if SOFTWARE_TPG_ENABLED:
             mgraph.connect_modules(f"tp_datahandler_{link_to_tp_sid_map[link.dro_source_id]}.timesync_output", "timesync_consumer.input_queue", "timesync_q")
             mgraph.connect_modules(f"tp_datahandler_{link_to_tp_sid_map[link.dro_source_id]}.fragment_queue", "fragment_consumer.input_queue", "data_fragments_q", 100)
+
             mgraph.add_endpoint(f"tp_requests_{link_to_tp_sid_map[link.dro_source_id]}", f"tp_datahandler_{link_to_tp_sid_map[link.dro_source_id]}.request_input", Direction.IN)
             mgraph.add_endpoint(f"tp_requests_{link_to_tp_sid_map[link.dro_source_id]}", None, Direction.OUT) # Fake request endpoint
+            
+            mgraph.add_endpoint(f"tpsets_link{link.dro_source_id}", f"datahandler_{link.dro_source_id}.tpset_out",    Direction.OUT, topic=["TPSets"])
+            mgraph.add_endpoint(f"tpsets_link{link.dro_source_id}", None,    Direction.IN, topic=["TPSets"]) # Fake TPSet endpoint
         
         mgraph.connect_modules(f"datahandler_{link.dro_source_id}.timesync_output", "timesync_consumer.input_queue", "timesync_q")
         mgraph.connect_modules(f"datahandler_{link.dro_source_id}.fragment_queue", "fragment_consumer.input_queue", "data_fragments_q", 100)
