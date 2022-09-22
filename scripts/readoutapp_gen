@@ -87,6 +87,7 @@ def cli(config, json_dir, debug):
     FIRMWARE_TPG_ENABLED=readout.enable_firmware_tpg,
     DTP_CONNECTIONS_FILE=readout.dtp_connections_file,
     FIRMWARE_HIT_THRESHOLD=readout.firmware_hit_threshold,
+    FAKE_TIMESTAMP = readoutapp.fwtp_fake_timestamp,
     TPG_CHANNEL_MAP=readoutapp.tpg_channel_map,
     DATA_FILE=readout.data_file,
     TP_DATA_FILE=readoutapp.tp_data_file,
