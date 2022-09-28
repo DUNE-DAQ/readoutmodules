@@ -75,6 +75,14 @@ DataRecorder::init(const data_t& args)
       return;
     }
 
+    // IF MPD
+    if (inst.find("mpd") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for mpd";
+      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::MPD_MESSAGE_STRUCT>(get_name()));
+      recorder->init(args);
+      return;
+    }
+
     // IF TDE
     if (inst.find("tde") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for tde";
