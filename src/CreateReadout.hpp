@@ -35,6 +35,8 @@
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "ndreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 #include "ndreadoutlibs/pacman/PACMANListRequestHandler.hpp"
+#include "ndreadoutlibs/mpd/MPDFrameProcessor.hpp"
+#include "ndreadoutlibs/mpd/MPDListRequestHandler.hpp"
 
 #include <memory>
 #include <string>
@@ -154,6 +156,18 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
                                              ndreadoutlibs::PACMANListRequestHandler,
                                              rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
                                              ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
+      // IF ND LAr MPD
+      if (inst.find("mpd") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a mpd";
+        auto readout_model =
+          std::make_unique<rol::ReadoutModel<ndt::MPD_MESSAGE_STRUCT,
+                                             ndreadoutlibs::MPDListRequestHandler,
+                                             rol::SkipListLatencyBufferModel<ndt::MPD_MESSAGE_STRUCT>,
+                                             ndreadoutlibs::MPDFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
       }
