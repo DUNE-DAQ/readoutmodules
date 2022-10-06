@@ -114,13 +114,6 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
 
       if (inst.find("sw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
-        // auto readout_model = std::make_unique<rol::ReadoutModel<
-        //   fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-        //   rol::EmptyFragmentRequestHandlerModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-        //                                         rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
-        //   rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-        //   fdl::SWWIBTriggerPrimitiveProcessor>>(run_marker);
-        // readout_model->init(args);
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
           rol::DefaultSkipListRequestHandler<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
