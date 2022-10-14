@@ -25,6 +25,7 @@
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
+#include "fdreadoutlibs/daphne/DAPHNEStreamFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
 #include "fdreadoutlibs/wib/RAWWIBTriggerPrimitiveProcessor.hpp"
@@ -110,6 +111,19 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
+      // IF PDS Stream skiplist
+      if (inst.find("pds_stream") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds stream mode using BinarySearchQueue";
+        auto readout_model = std::make_unique<
+          rol::ReadoutModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT,
+                            rol::DefaultRequestHandlerModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT,
+                                                            rol::BinarySearchQueueModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT>>,
+                            rol::BinarySearchQueueModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT>,
+                            fdl::DAPHNEStreamFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
       if (inst.find("sw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
@@ -143,7 +157,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
           rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
-        return std::move(readout_model);
+        return readout_model;
       }
 
       // IF ND LAr PACMAN
