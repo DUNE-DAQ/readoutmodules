@@ -16,7 +16,7 @@
 #include "daqdataformats/Fragment.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
 #include "detdataformats/daphne/DAPHNEFrame.hpp"
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
 
 #include <memory>
 #include <string>

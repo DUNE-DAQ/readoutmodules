@@ -16,7 +16,7 @@
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
 #include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"

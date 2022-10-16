@@ -25,7 +25,7 @@
 #include "readoutlibs/models/DefaultSkipListRequestHandler.hpp"
 #include "readoutlibs/models/SkipListLatencyBufferModel.hpp"
 
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"

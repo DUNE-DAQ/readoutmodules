@@ -14,7 +14,7 @@
 #define READOUTMODULES_PLUGINS_FAKECARDREADER_HPP_
 
 // package
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
 #include "readoutlibs/sourceemulatorconfig/Structs.hpp"
