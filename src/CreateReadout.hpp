@@ -30,6 +30,7 @@
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -167,10 +168,14 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("tde") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::TDE_AMC_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::TDE_AMC_STRUCT,
-                                                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>>,
-                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>,
+          rol::ReadoutModel<fdt::TDEAMCFrameTypeAdapter
+,
+                            rol::DefaultRequestHandlerModel<fdt::TDEAMCFrameTypeAdapter
+,
+                                                            rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter
+>>,
+                            rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter
+>,
                             fdl::TDEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;

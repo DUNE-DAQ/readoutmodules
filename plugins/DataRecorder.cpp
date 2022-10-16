@@ -10,6 +10,7 @@
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
@@ -82,7 +83,8 @@ DataRecorder::init(const data_t& args)
     // IF TDE
     if (inst.find("tde") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for tde";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDE_AMC_STRUCT >(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter
+ >(get_name()));
       recorder->init(args);
       return;
     }
