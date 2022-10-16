@@ -26,6 +26,8 @@
 #include "readoutlibs/models/SkipListLatencyBufferModel.hpp"
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
@@ -65,10 +67,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::WIB_SUPERCHUNK_STRUCT,
-          rol::ZeroCopyRecordingRequestHandlerModel<fdt::WIB_SUPERCHUNK_STRUCT,
-                                                    rol::FixedRateQueueModel<fdt::WIB_SUPERCHUNK_STRUCT>>,
-          rol::FixedRateQueueModel<fdt::WIB_SUPERCHUNK_STRUCT>,
+          fdt::ProtoWIBSuperChunkTypeAdapter,
+          rol::ZeroCopyRecordingRequestHandlerModel<fdt::ProtoWIBSuperChunkTypeAdapter,
+                                                    rol::FixedRateQueueModel<fdt::ProtoWIBSuperChunkTypeAdapter>>,
+          rol::FixedRateQueueModel<fdt::ProtoWIBSuperChunkTypeAdapter>,
           fdl::WIBFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;

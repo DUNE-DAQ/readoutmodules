@@ -15,6 +15,7 @@
 
 // package
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
 #include "readoutlibs/sourceemulatorconfig/Structs.hpp"
 #include "readoutlibs/utils/ReusableThread.hpp"
@@ -54,7 +55,7 @@ public:
   void get_info(opmonlib::InfoCollector& ci, int level) override;
 
 private:
-  using sink_t = iomanager::SenderConcept<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>;
+  using sink_t = iomanager::SenderConcept<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>;
   // Commands
   void do_conf(const data_t& /*args*/);
   void do_scrap(const data_t& /*args*/);

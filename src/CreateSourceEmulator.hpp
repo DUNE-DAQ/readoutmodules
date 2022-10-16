@@ -17,6 +17,7 @@
 #include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
 #include <memory>
@@ -67,7 +68,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("wib") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>>(
         qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz);
     return source_emu_model;
   }
