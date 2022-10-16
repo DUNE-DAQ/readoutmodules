@@ -32,6 +32,7 @@
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -145,9 +146,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("raw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for raw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::DefaultSkipListRequestHandler<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-          rol::SkipListLatencyBufferModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter,
+          rol::DefaultSkipListRequestHandler<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
+          rol::SkipListLatencyBufferModel<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return std::move(readout_model);
