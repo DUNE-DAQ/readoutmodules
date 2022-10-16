@@ -8,6 +8,8 @@
 //#include "readout/NDReadoutTypes.hpp"
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/RecorderModel.hpp"
@@ -47,7 +49,7 @@ DataRecorder::init(const data_t& args)
     // IF WIB2
     if (inst.find("wib2") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib2";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }

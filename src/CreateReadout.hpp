@@ -27,6 +27,7 @@
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -80,10 +81,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("wib2") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib2";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::WIB2_SUPERCHUNK_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::WIB2_SUPERCHUNK_STRUCT,
-                                                            rol::FixedRateQueueModel<fdt::WIB2_SUPERCHUNK_STRUCT>>,
-                            rol::FixedRateQueueModel<fdt::WIB2_SUPERCHUNK_STRUCT>,
+          rol::ReadoutModel<fdt::DUNEWIBSuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DUNEWIBSuperChunkTypeAdapter,
+                                                            rol::FixedRateQueueModel<fdt::DUNEWIBSuperChunkTypeAdapter>>,
+                            rol::FixedRateQueueModel<fdt::DUNEWIBSuperChunkTypeAdapter>,
                             fdl::WIB2FrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;

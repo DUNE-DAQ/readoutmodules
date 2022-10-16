@@ -18,6 +18,8 @@
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
 #include <memory>
@@ -59,7 +61,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib2 link";
 
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter>>(
         qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, emu_frame_error_rate, wib2_rate_khz);
     return source_emu_model;
   }
