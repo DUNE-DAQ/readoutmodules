@@ -28,6 +28,7 @@
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -94,10 +95,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("pds_queue") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using Searchable Queue";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
-                                                            rol::BinarySearchQueueModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>>,
-                            rol::BinarySearchQueueModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>,
+          rol::ReadoutModel<fdt::DAPHNESuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DAPHNESuperChunkTypeAdapter,
+                                                            rol::BinarySearchQueueModel<fdt::DAPHNESuperChunkTypeAdapter>>,
+                            rol::BinarySearchQueueModel<fdt::DAPHNESuperChunkTypeAdapter>,
                             fdl::DAPHNEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -107,9 +108,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("pds_list") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using SkipList LB";
         auto readout_model =
-          std::make_unique<rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
+          std::make_unique<rol::ReadoutModel<fdt::DAPHNESuperChunkTypeAdapter,
                                              fdl::DAPHNEListRequestHandler,
-                                             rol::SkipListLatencyBufferModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>,
+                                             rol::SkipListLatencyBufferModel<fdt::DAPHNESuperChunkTypeAdapter>,
                                              fdl::DAPHNEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;

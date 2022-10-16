@@ -19,6 +19,7 @@
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
@@ -79,7 +80,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("pds") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>>(
         qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz);
     return source_emu_model;
   }
