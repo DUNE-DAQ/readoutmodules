@@ -31,6 +31,7 @@
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -121,9 +122,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("sw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::DefaultSkipListRequestHandler<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-          rol::SkipListLatencyBufferModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          fdt::TriggerPrimitiveTypeAdapter,
+          rol::DefaultSkipListRequestHandler<fdt::TriggerPrimitiveTypeAdapter>,
+          rol::SkipListLatencyBufferModel<fdt::TriggerPrimitiveTypeAdapter>,
           fdl::SWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
