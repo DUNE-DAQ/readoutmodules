@@ -29,6 +29,7 @@
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
@@ -131,9 +132,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("ssp") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a SSPs using Searchable Queue";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::SSP_FRAME_STRUCT,
-          rol::DefaultRequestHandlerModel<fdt::SSP_FRAME_STRUCT, rol::BinarySearchQueueModel<fdt::SSP_FRAME_STRUCT>>,
-          rol::BinarySearchQueueModel<fdt::SSP_FRAME_STRUCT>,
+          fdt::SSPFrameTypeAdapter,
+          rol::DefaultRequestHandlerModel<fdt::SSPFrameTypeAdapter, rol::BinarySearchQueueModel<fdt::SSPFrameTypeAdapter>>,
+          rol::BinarySearchQueueModel<fdt::SSPFrameTypeAdapter>,
           fdl::SSPFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
