@@ -79,7 +79,7 @@ def cli(config, json_dir, debug):
     sourceid_broker.generate_trigger_source_ids([this_dro], tp_mode)
     
     # add app
-    the_system.apps["readout_app"] = app_confgen.generate(
+    the_system.apps["readout-app"] = app_confgen.generate(
     DRO_CONFIG=this_dro,
     CLOCK_SPEED_HZ=readout.clock_speed_hz,
     DATA_RATE_SLOWDOWN_FACTOR=readout.data_rate_slowdown_factor,
