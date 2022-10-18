@@ -26,10 +26,13 @@
 using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT, "PDSFrame")
 namespace readoutmodules {
 
 std::unique_ptr<readoutlibs::SourceEmulatorConcept>
-createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<bool>& run_marker)
+createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool>& run_marker)
 {
   //! Values suitable to emulation
 

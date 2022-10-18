@@ -52,10 +52,7 @@ FakeCardReader::init(const data_t& args)
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering init() method";
   auto ini = args.get<appfwk::app::ModInit>();
   for (const auto& qi : ini.conn_refs) {
-    if (qi.dir != iomanager::connection::Direction::kOutput) {
-      continue;
-    }
-
+    
     try {
       if (m_source_emus.find(qi.name) != m_source_emus.end()) {
         TLOG() << get_name() << "Same queue instance used twice";

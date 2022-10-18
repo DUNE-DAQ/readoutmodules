@@ -41,7 +41,7 @@ DataRecorder::init(const data_t& args)
 {
   try {
     auto qi = appfwk::connection_index(args, { "raw_recording" });
-    auto inst = qi["raw_recording"].uid;
+    auto inst = qi["raw_recording"];
 
     // IF WIB2
     if (inst.find("wib2") != std::string::npos) {
