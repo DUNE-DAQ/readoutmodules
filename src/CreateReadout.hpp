@@ -47,6 +47,7 @@ namespace dunedaq {
     DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT, "WIBFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT, "WIBFrame")
     DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT, "PDSFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::SW_WIB_TRIGGERPRIMITIVE_STRUCT, "TriggerPrimitive")
 
 namespace readoutmodules {
 
