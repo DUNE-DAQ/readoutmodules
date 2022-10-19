@@ -15,7 +15,8 @@
 #include "DummyConsumer.cpp"
 #include "daqdataformats/Fragment.hpp"
 #include "detdataformats/wib/WIBFrame.hpp"
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+#include "detdataformats/daphne/DAPHNEFrame.hpp"
+
 
 #include <memory>
 #include <string>

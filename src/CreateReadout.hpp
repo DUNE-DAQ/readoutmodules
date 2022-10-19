@@ -25,7 +25,15 @@
 #include "readoutlibs/models/DefaultSkipListRequestHandler.hpp"
 #include "readoutlibs/models/SkipListLatencyBufferModel.hpp"
 
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter.hpp"
+
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
@@ -65,10 +73,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::WIB_SUPERCHUNK_STRUCT,
-          rol::ZeroCopyRecordingRequestHandlerModel<fdt::WIB_SUPERCHUNK_STRUCT,
-                                                    rol::FixedRateQueueModel<fdt::WIB_SUPERCHUNK_STRUCT>>,
-          rol::FixedRateQueueModel<fdt::WIB_SUPERCHUNK_STRUCT>,
+          fdt::ProtoWIBSuperChunkTypeAdapter,
+          rol::ZeroCopyRecordingRequestHandlerModel<fdt::ProtoWIBSuperChunkTypeAdapter,
+                                                    rol::FixedRateQueueModel<fdt::ProtoWIBSuperChunkTypeAdapter>>,
+          rol::FixedRateQueueModel<fdt::ProtoWIBSuperChunkTypeAdapter>,
           fdl::WIBFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -78,10 +86,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("wib2") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib2";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::WIB2_SUPERCHUNK_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::WIB2_SUPERCHUNK_STRUCT,
-                                                            rol::FixedRateQueueModel<fdt::WIB2_SUPERCHUNK_STRUCT>>,
-                            rol::FixedRateQueueModel<fdt::WIB2_SUPERCHUNK_STRUCT>,
+          rol::ReadoutModel<fdt::DUNEWIBSuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DUNEWIBSuperChunkTypeAdapter,
+                                                            rol::FixedRateQueueModel<fdt::DUNEWIBSuperChunkTypeAdapter>>,
+                            rol::FixedRateQueueModel<fdt::DUNEWIBSuperChunkTypeAdapter>,
                             fdl::WIB2FrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -91,10 +99,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("pds_queue") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using Searchable Queue";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
-                                                            rol::BinarySearchQueueModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>>,
-                            rol::BinarySearchQueueModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>,
+          rol::ReadoutModel<fdt::DAPHNESuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DAPHNESuperChunkTypeAdapter,
+                                                            rol::BinarySearchQueueModel<fdt::DAPHNESuperChunkTypeAdapter>>,
+                            rol::BinarySearchQueueModel<fdt::DAPHNESuperChunkTypeAdapter>,
                             fdl::DAPHNEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -104,9 +112,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("pds_list") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds using SkipList LB";
         auto readout_model =
-          std::make_unique<rol::ReadoutModel<fdt::DAPHNE_SUPERCHUNK_STRUCT,
+          std::make_unique<rol::ReadoutModel<fdt::DAPHNESuperChunkTypeAdapter,
                                              fdl::DAPHNEListRequestHandler,
-                                             rol::SkipListLatencyBufferModel<fdt::DAPHNE_SUPERCHUNK_STRUCT>,
+                                             rol::SkipListLatencyBufferModel<fdt::DAPHNESuperChunkTypeAdapter>,
                                              fdl::DAPHNEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -115,9 +123,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("sw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::DefaultSkipListRequestHandler<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-          rol::SkipListLatencyBufferModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          fdt::TriggerPrimitiveTypeAdapter,
+          rol::DefaultSkipListRequestHandler<fdt::TriggerPrimitiveTypeAdapter>,
+          rol::SkipListLatencyBufferModel<fdt::TriggerPrimitiveTypeAdapter>,
           fdl::SWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -127,9 +135,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("ssp") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a SSPs using Searchable Queue";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::SSP_FRAME_STRUCT,
-          rol::DefaultRequestHandlerModel<fdt::SSP_FRAME_STRUCT, rol::BinarySearchQueueModel<fdt::SSP_FRAME_STRUCT>>,
-          rol::BinarySearchQueueModel<fdt::SSP_FRAME_STRUCT>,
+          fdt::SSPFrameTypeAdapter,
+          rol::DefaultRequestHandlerModel<fdt::SSPFrameTypeAdapter, rol::BinarySearchQueueModel<fdt::SSPFrameTypeAdapter>>,
+          rol::BinarySearchQueueModel<fdt::SSPFrameTypeAdapter>,
           fdl::SSPFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -138,9 +146,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("raw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for raw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
-          fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::DefaultSkipListRequestHandler<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
-          rol::SkipListLatencyBufferModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter,
+          rol::DefaultSkipListRequestHandler<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
+          rol::SkipListLatencyBufferModel<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return std::move(readout_model);
@@ -162,10 +170,14 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("tde") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::TDE_AMC_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::TDE_AMC_STRUCT,
-                                                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>>,
-                            rol::FixedRateQueueModel<fdt::TDE_AMC_STRUCT>,
+          rol::ReadoutModel<fdt::TDEAMCFrameTypeAdapter
+,
+                            rol::DefaultRequestHandlerModel<fdt::TDEAMCFrameTypeAdapter
+,
+                                                            rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter
+>>,
+                            rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter
+>,
                             fdl::TDEFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
