@@ -22,6 +22,8 @@
 #include "readoutlibs/models/FixedRateQueueModel.hpp"
 #include "readoutlibs/models/ReadoutModel.hpp"
 #include "readoutlibs/models/ZeroCopyRecordingRequestHandlerModel.hpp"
+#include "readoutlibs/models/DefaultSkipListRequestHandler.hpp"
+#include "readoutlibs/models/SkipListLatencyBufferModel.hpp"
 
 #include "fdreadoutlibs/FDReadoutTypes.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
@@ -120,9 +122,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::EmptyFragmentRequestHandlerModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT,
-                                                rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
-          rol::BinarySearchQueueModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          rol::DefaultSkipListRequestHandler<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          rol::SkipListLatencyBufferModel<fdt::SW_WIB_TRIGGERPRIMITIVE_STRUCT>,
           fdl::SWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
@@ -144,9 +145,8 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         TLOG(TLVL_WORK_STEPS) << "Creating readout for raw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-          rol::DefaultRequestHandlerModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT,
-                                          rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>>,
-          rol::BinarySearchQueueModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          rol::DefaultSkipListRequestHandler<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
+          rol::SkipListLatencyBufferModel<fdt::RAW_WIB_TRIGGERPRIMITIVE_STRUCT>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
         return std::move(readout_model);
