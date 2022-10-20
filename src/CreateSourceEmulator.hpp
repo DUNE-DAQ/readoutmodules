@@ -50,7 +50,9 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   static constexpr double wib2_dropout_rate = 0.0;
   static constexpr double wib2_rate_khz = 166.0;
 
-  static constexpr int tde_time_tick_diff = 1000;
+  // Adjusted for a 50 MHz clock (the default in daqconf)
+  // Has to be changed when the actual value is known
+  static constexpr int tde_time_tick_diff = 458;
   static constexpr double tde_dropout_rate = 0.0;
   static constexpr double tde_rate_khz = 0.43668;
 
