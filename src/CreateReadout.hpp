@@ -46,10 +46,12 @@ using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
 
-    DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT, "WIBFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT, "WIBFrame")
-    DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT, "PDSFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT, "PDSFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDE_AMC_STRUCT, "TDEData")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::SW_WIB_TRIGGERPRIMITIVE_STRUCT, "TriggerPrimitive")
+DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT, "PACMAN")
 
 namespace readoutmodules {
 
