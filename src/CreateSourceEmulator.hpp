@@ -31,9 +31,10 @@
 using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT, "WIBFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT, "WIBFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT, "PDSFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEData")
 namespace readoutmodules {
 
 std::unique_ptr<readoutlibs::SourceEmulatorConcept>
