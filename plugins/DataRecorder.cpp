@@ -6,7 +6,12 @@
  * received with this code.
  */
 //#include "readout/NDReadoutTypes.hpp"
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/RecorderModel.hpp"
@@ -46,7 +51,7 @@ DataRecorder::init(const data_t& args)
     // IF WIB2
     if (inst.find("wib2") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib2";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }
@@ -54,7 +59,7 @@ DataRecorder::init(const data_t& args)
     // IF WIB
     if (inst.find("wib") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }
@@ -62,7 +67,7 @@ DataRecorder::init(const data_t& args)
     // IF PDS
     if (inst.find("pds") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pds";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }
@@ -78,7 +83,8 @@ DataRecorder::init(const data_t& args)
     // IF TDE
     if (inst.find("tde") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for tde";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDE_AMC_STRUCT >(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter
+ >(get_name()));
       recorder->init(args);
       return;
     }
