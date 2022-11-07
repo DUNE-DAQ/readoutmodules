@@ -159,7 +159,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
           rol::SkipListLatencyBufferModel<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
-        return std::move(readout_model);
+        return readout_model;
       }
 
       // IF ND LAr PACMAN
