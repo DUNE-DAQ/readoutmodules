@@ -29,6 +29,7 @@
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNEStreamSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
@@ -125,10 +126,10 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       if (inst.find("pds_stream") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds stream mode using BinarySearchQueue";
         auto readout_model = std::make_unique<
-          rol::ReadoutModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT,
-                            rol::DefaultRequestHandlerModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT,
-                                                            rol::BinarySearchQueueModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT>>,
-                            rol::BinarySearchQueueModel<fdt::DAPHNE_STREAM_SUPERCHUNK_STRUCT>,
+          rol::ReadoutModel<fdt::DAPHNEStreamSuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DAPHNEStreamSuperChunkTypeAdapter,
+                                                            rol::BinarySearchQueueModel<fdt::DAPHNEStreamSuperChunkTypeAdapter>>,
+                            rol::BinarySearchQueueModel<fdt::DAPHNEStreamSuperChunkTypeAdapter>,
                             fdl::DAPHNEStreamFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
