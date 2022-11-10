@@ -29,12 +29,14 @@
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNEStreamSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
+#include "fdreadoutlibs/daphne/DAPHNEStreamFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
 #include "fdreadoutlibs/wib2/RAWWIBTriggerPrimitiveProcessor.hpp"
@@ -120,6 +122,19 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return readout_model;
       }
 
+      // IF PDS Stream skiplist
+      if (inst.find("pds_stream") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pds stream mode using BinarySearchQueue";
+        auto readout_model = std::make_unique<
+          rol::ReadoutModel<fdt::DAPHNEStreamSuperChunkTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DAPHNEStreamSuperChunkTypeAdapter,
+                                                            rol::BinarySearchQueueModel<fdt::DAPHNEStreamSuperChunkTypeAdapter>>,
+                            rol::BinarySearchQueueModel<fdt::DAPHNEStreamSuperChunkTypeAdapter>,
+                            fdl::DAPHNEStreamFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
       if (inst.find("sw_tp") != std::string::npos) {
         TLOG(TLVL_WORK_STEPS) << "Creating readout for sw tp";
         auto readout_model = std::make_unique<rol::ReadoutModel<
@@ -151,7 +166,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
           rol::SkipListLatencyBufferModel<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
           fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
         readout_model->init(args);
-        return std::move(readout_model);
+        return readout_model;
       }
 
       // IF ND LAr PACMAN
