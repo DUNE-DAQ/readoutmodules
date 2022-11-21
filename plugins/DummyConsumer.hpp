@@ -12,7 +12,7 @@
 #include "appfwk/DAQModule.hpp"
 #include "iomanager/IOManager.hpp"
 #include "dfmessages/TimeSync.hpp"
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
 #include "readoutlibs/utils/ReusableThread.hpp"
 
 #include <atomic>

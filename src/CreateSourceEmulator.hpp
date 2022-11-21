@@ -16,7 +16,12 @@
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
 #include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
-#include "fdreadoutlibs/FDReadoutTypes.hpp"
+
+#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
 #include <memory>
@@ -58,7 +63,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib2 link";
 
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB2_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter>>(
         qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, emu_frame_error_rate, wib2_rate_khz);
     return source_emu_model;
   }
@@ -67,7 +72,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("wib") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::WIB_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>>(
         qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz);
     return source_emu_model;
   }
@@ -76,7 +81,7 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("pds") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
     auto source_emu_model =
-      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNE_SUPERCHUNK_STRUCT>>(
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>>(
         qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz);
     return source_emu_model;
   }
@@ -92,7 +97,8 @@ createSourceEmulator(const iomanager::connection::ConnectionRef qi, std::atomic<
   if (inst.find("tde") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tde link";
     auto source_emu_model =
-      std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDE_AMC_STRUCT>>(
+      std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter
+>>(
         qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
     return source_emu_model;
   }
