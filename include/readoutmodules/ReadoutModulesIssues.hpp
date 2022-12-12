@@ -84,7 +84,7 @@ ERS_DECLARE_ISSUE(readoutmodules,
 ERS_DECLARE_ISSUE(readoutmodules,
                   CannotWriteToQueue,
                   "SourceID[" << sid << "] Failed attempt to write to the queue: " << queuename
-                              << ". Data will be lost!",
+                           << ". Data will be lost!",
                   ((daqdataformats::SourceID)sid)((std::string)queuename))
 
 ERS_DECLARE_ISSUE(readoutmodules,
