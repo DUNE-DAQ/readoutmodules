@@ -19,7 +19,7 @@
 
 namespace dunedaq {
 
-    DUNE_DAQ_TYPESTRING(detdataformats::wib::WIBFrame, "WIBFrame")
+DUNE_DAQ_TYPESTRING(detdataformats::wib::WIBFrame, "WIBFrame")
 
 namespace readoutmodules {
 
@@ -28,7 +28,8 @@ class ErroredFrameConsumer : public DummyConsumer<detdataformats::wib::WIBFrame>
 public:
   explicit ErroredFrameConsumer(const std::string name)
     : DummyConsumer<detdataformats::wib::WIBFrame>(name)
-  {}
+  {
+  }
 
   void packet_callback(detdataformats::wib::WIBFrame& packet) override
   {
