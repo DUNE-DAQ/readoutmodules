@@ -18,6 +18,9 @@
 #include <string>
 
 namespace dunedaq {
+
+    DUNE_DAQ_TYPESTRING(detdataformats::wib::WIBFrame, "WIBFrame")
+
 namespace readoutmodules {
 
 class ErroredFrameConsumer : public DummyConsumer<detdataformats::wib::WIBFrame>
