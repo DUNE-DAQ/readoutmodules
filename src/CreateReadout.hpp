@@ -145,6 +145,20 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         return std::move(readout_model);
       }
 
+      if (inst.find("pacman") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a raw pacman";
+        auto readout_model =
+          std::make_unique<rol::ReadoutModel<ndt::PACMAN_MESSAGE_STRUCT,
+					     rol::DefaultRequestHandlerModel<ndt::PACMAN_MESSAGE_STRUCT,
+                                          rol::BinarySearchQueueModel<ndt::PACMAN_MESSAGE_STRUCT>>,
+                                             rol::BinarySearchQueueModel<ndt::PACMAN_MESSAGE_STRUCT>,
+                                             ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
+
+/*
       // IF ND LAr PACMAN
       if (inst.find("pacman") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pacman";
@@ -156,7 +170,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         readout_model->init(args);
         return readout_model;
       }
-
+*/
       // IF variadic
       if (inst.find("varsize") != std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a variable size FE";
