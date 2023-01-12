@@ -12,7 +12,8 @@
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 
-#include "ndreadoutlibs/NDReadoutTypes.hpp"
+#include "ndreadoutlibs/NDReadoutPACMANTypeAdapter.hpp"
+#include "ndreadoutlibs/NDReadoutMPDTypeAdapter.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/RecorderModel.hpp"
 #include "readoutlibs/recorderconfig/Nljs.hpp"
