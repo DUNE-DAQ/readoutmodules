@@ -35,6 +35,8 @@
 #include "ndreadoutlibs/NDReadoutTypes.hpp"
 #include "ndreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 #include "ndreadoutlibs/pacman/PACMANListRequestHandler.hpp"
+#include "ndreadoutlibs/toad/TOADFrameProcessor.hpp"
+#include "ndreadoutlibs/toad/TOADListRequestHandler.hpp"
 
 #include <memory>
 #include <string>
@@ -154,6 +156,18 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
                                              ndreadoutlibs::PACMANListRequestHandler,
                                              rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
                                              ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
+      // IF ND GAr TOAD
+      if (inst.find("toad") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a toad";
+        auto readout_model =
+          std::make_unique<rol::ReadoutModel<ndt::TOAD_MESSAGE_STRUCT,
+                                             ndreadoutlibs::TOADListRequestHandler,
+                                             rol::SkipListLatencyBufferModel<ndt::TOAD_MESSAGE_STRUCT>,
+                                             ndreadoutlibs::TOADFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
       }
