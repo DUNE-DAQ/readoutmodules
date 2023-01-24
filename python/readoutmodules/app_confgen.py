@@ -100,6 +100,8 @@ def generate(
         FRONTEND_TYPE = "tde"
     elif FRONTEND_TYPE== "ND_LAr":
         FRONTEND_TYPE = "pacman"
+    elif FRONTEND_TYPE == "ND_GAr":
+	FRONTEND_TYPE == "toad"
     
 
     if DEBUG: print(f'FRONTENT_TYPE={FRONTEND_TYPE}')
@@ -201,6 +203,14 @@ def generate(
             conf = pcr.Conf(link_confs = [pcr.LinkConfiguration(Source_ID=link.dro_source_id)
                                           for link in DRO_CONFIG.links],
                             zmq_receiver_timeout = 10000)
+
+        if FRONTEND_TYPE=='toad':
+            fake_source = "toad_source"
+            card_reader = "PacmanCardReader"
+            conf = pcr.Conf(link_confs = [pcr.LinkConfiguration(Source_ID=link.dro_source_id)
+                                          for link in DRO_CONFIG.links],
+                            zmq_receiver_timeout = 10000)
+
         modules += [DAQModule(name = fake_source,
                               plugin = card_reader,
                               conf = conf)]
