@@ -44,9 +44,12 @@
 #include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
 #include "fdreadoutlibs/wib2/WIB2FrameProcessor.hpp"
 #include "fdreadoutlibs/tde/TDEFrameProcessor.hpp"
-#include "ndreadoutlibs/NDReadoutTypes.hpp"
+#include "ndreadoutlibs/NDReadoutPACMANTypeAdapter.hpp"
+#include "ndreadoutlibs/NDReadoutMPDTypeAdapter.hpp"
 #include "ndreadoutlibs/pacman/PACMANFrameProcessor.hpp"
 #include "ndreadoutlibs/pacman/PACMANListRequestHandler.hpp"
+#include "ndreadoutlibs/mpd/MPDFrameProcessor.hpp"
+#include "ndreadoutlibs/mpd/MPDListRequestHandler.hpp"
 
 #include <memory>
 #include <string>
@@ -62,6 +65,7 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, 
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEData")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
 DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT, "PACMAN")
+DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::MPD_MESSAGE_STRUCT, "MPD")
 
 namespace readoutmodules {
 
@@ -185,6 +189,18 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
                                              ndreadoutlibs::PACMANListRequestHandler,
                                              rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
                                              ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }
+
+      // IF ND LAr MPD
+      if (inst.find("mpd") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a mpd";
+        auto readout_model =
+          std::make_unique<rol::ReadoutModel<ndt::MPD_MESSAGE_STRUCT,
+                                             ndreadoutlibs::MPDListRequestHandler,
+                                             rol::SkipListLatencyBufferModel<ndt::MPD_MESSAGE_STRUCT>,
+                                             ndreadoutlibs::MPDFrameProcessor>>(run_marker);
         readout_model->init(args);
         return readout_model;
       }

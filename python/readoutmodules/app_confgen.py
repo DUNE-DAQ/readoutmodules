@@ -98,8 +98,10 @@ def generate(
         FRONTEND_TYPE = "pds_list"
     elif FRONTEND_TYPE== "VD_Top_TPC":
         FRONTEND_TYPE = "tde"
-    elif FRONTEND_TYPE== "ND_LAr":
+    elif FRONTEND_TYPE== "NDLAr_TPC":
         FRONTEND_TYPE = "pacman"
+    elif FRONTEND_TYPE== "NDLAr_PDS":
+        FRONTEND_TYPE = "mpd"
     
 
     if DEBUG: print(f'FRONTENT_TYPE={FRONTEND_TYPE}')
