@@ -15,9 +15,9 @@
 
 #include "appfwk/app/Nljs.hpp"
 #include "appfwk/cmd/Nljs.hpp"
-#include "detdataformats/wib/WIBFrame.hpp"
-#include "detdataformats/wib/RawWIBTp.hpp"
-#include "detdataformats/tde/TDE16Frame.hpp"
+//#include "detdataformats/wib/WIBFrame.hpp"
+//#include "detdataformats/wib/RawWIBTp.hpp"
+//#include "detdataformats/tde/TDE16Frame.hpp"
 #include "logging/Logging.hpp"
 
 #include <chrono>
@@ -69,7 +69,6 @@ FakeCardReader::init(const data_t& args)
       throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_name(), excpt);
     }
   }
-  TLOG_DEBUG(TLVL_BOOKKEEPING) << "Number of WIB output queues: " << m_data_senders.size();
   TLOG_DEBUG(TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting init() method";
 }
 

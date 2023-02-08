@@ -9,6 +9,7 @@
 
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 
@@ -65,6 +66,14 @@ DataRecorder::init(const data_t& args)
       return;
     }
 
+    // IF WIBEth
+    if (inst.find("wibeth") != std::string::npos) {
+      TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wibeth";
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::DUNEWIBEthTypeAdapter>(get_name()));
+      recorder->init(args);
+      return;
+    }
+
     // IF PDS
     if (inst.find("pds") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pds";
@@ -92,8 +101,7 @@ DataRecorder::init(const data_t& args)
     // IF TDE
     if (inst.find("tde") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for tde";
-      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter
- >(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }

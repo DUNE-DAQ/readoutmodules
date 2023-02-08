@@ -19,6 +19,7 @@
 
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
 
@@ -33,6 +34,7 @@ using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 namespace dunedaq {
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEData")
 namespace readoutmodules {
@@ -54,6 +56,10 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   static constexpr double wib2_dropout_rate = 0.0;
   static constexpr double wib2_rate_khz = 166.0;
 
+  static constexpr int wibeth_time_tick_diff = 32*64;
+  static constexpr double wibeth_dropout_rate = 0.0;
+  static constexpr double wibeth_rate_khz = 30.5176;
+
   static constexpr int tde_time_tick_diff = 1000;
   static constexpr double tde_dropout_rate = 0.0;
   static constexpr double tde_rate_khz = 0.43668;
@@ -61,6 +67,15 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   static constexpr double emu_frame_error_rate = 0.0;
 
   auto& inst = qi.uid;
+
+  // IF WIBETH
+  if (inst.find("wibeth") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wibeth link";
+    auto source_emu_model =
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBEthTypeAdapter>>(
+        qi.name, run_marker, wibeth_time_tick_diff, wibeth_dropout_rate, emu_frame_error_rate, wibeth_rate_khz);
+    return source_emu_model;
+  }
 
   // IF WIB2
   if (inst.find("wib2") != std::string::npos) {
