@@ -43,6 +43,7 @@ def generate(
     HOST="localhost",
     EMULATOR_MODE=False,
     FLX_INPUT=False,
+    ETH_MODE=False,
     RAW_RECORDING_ENABLED=False,
     RAW_RECORDING_OUTPUT_DIR=".",
     SOFTWARE_TPG_ENABLED=False,
@@ -92,8 +93,10 @@ def generate(
     if ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 50000000):
         FRONTEND_TYPE = "wib"
         FWTP_TICK_LENGTH=25
-    elif ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 62500000):
+    elif ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 62500000 and ETH_MODE==False):
         FRONTEND_TYPE = "wib2"
+    elif ((FRONTEND_TYPE== "HD_TPC" or FRONTEND_TYPE== "VD_Bottom_TPC") and CLOCK_SPEED_HZ== 62500000 and ETH_MODE==True):
+        FRONTEND_TYPE = "wibeth"
     elif FRONTEND_TYPE== "HD_PDS" or FRONTEND_TYPE== "VD_Cathode_PDS" or FRONTEND_TYPE=="VD_Membrane_PDS":
         FRONTEND_TYPE = "pds_list"
     elif FRONTEND_TYPE== "VD_Top_TPC":

@@ -15,7 +15,7 @@
 
 // package
 
-#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+//#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
 #include "readoutlibs/sourceemulatorconfig/Structs.hpp"
 #include "readoutlibs/utils/ReusableThread.hpp"
@@ -55,14 +55,14 @@ public:
   void get_info(opmonlib::InfoCollector& ci, int level) override;
 
 private:
-  using sink_t = iomanager::SenderConcept<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>;
+  //using sink_t = iomanager::SenderConcept<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>;
   // Commands
   void do_conf(const data_t& /*args*/);
   void do_scrap(const data_t& /*args*/);
   void do_start(const data_t& /*args*/);
   void do_stop(const data_t& /*args*/);
 
-  void generate_data(sink_t* queue, int link_id);
+  //void generate_data(sink_t* queue, int link_id);
 
   // Configuration
   bool m_configured;
@@ -72,7 +72,7 @@ private:
   std::map<std::string, std::unique_ptr<readoutlibs::SourceEmulatorConcept>> m_source_emus;
 
   // data senders
-  std::vector<sink_t*> m_data_senders;
+  //std::vector<sink_t*> m_data_senders;
 
   // Internals
   std::unique_ptr<readoutlibs::FileSourceBuffer> m_source_buffer;

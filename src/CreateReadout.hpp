@@ -28,6 +28,7 @@
 
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
+#include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNEStreamSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
@@ -43,6 +44,7 @@
 #include "fdreadoutlibs/wib/SWWIBTriggerPrimitiveProcessor.hpp"
 #include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
 #include "fdreadoutlibs/wib2/WIB2FrameProcessor.hpp"
+#include "fdreadoutlibs/wibeth/WIBEthFrameProcessor.hpp"
 #include "fdreadoutlibs/tde/TDEFrameProcessor.hpp"
 #include "ndreadoutlibs/NDReadoutPACMANTypeAdapter.hpp"
 #include "ndreadoutlibs/NDReadoutMPDTypeAdapter.hpp"
@@ -60,7 +62,8 @@ using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 namespace dunedaq {
 
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIB2Frame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEData")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
@@ -84,7 +87,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
       auto& inst = qi.uid;
 
       // IF WIB
-      if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos) {
+      if (inst.find("wib") != std::string::npos && inst.find("wib2") == std::string::npos && inst.find("wibeth") == std::string::npos) {
         TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wib";
         auto readout_model = std::make_unique<rol::ReadoutModel<
           fdt::ProtoWIBSuperChunkTypeAdapter,
@@ -108,6 +111,19 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
         readout_model->init(args);
         return readout_model;
       }
+
+      // IF WIBEth
+      if (inst.find("wibeth") != std::string::npos) {
+        TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a wibeth";
+        auto readout_model = std::make_unique<
+          rol::ReadoutModel<fdt::DUNEWIBEthTypeAdapter,
+                            rol::DefaultRequestHandlerModel<fdt::DUNEWIBEthTypeAdapter,
+                                                            rol::FixedRateQueueModel<fdt::DUNEWIBEthTypeAdapter>>,
+                            rol::FixedRateQueueModel<fdt::DUNEWIBEthTypeAdapter>,
+                            fdl::WIBEthFrameProcessor>>(run_marker);
+        readout_model->init(args);
+        return readout_model;
+      }      
 
       // IF DAPHNE queue
       if (inst.find("pds_queue") != std::string::npos) {
