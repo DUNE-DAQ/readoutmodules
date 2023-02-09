@@ -12,9 +12,9 @@
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
-
 #include "ndreadoutlibs/NDReadoutPACMANTypeAdapter.hpp"
 #include "ndreadoutlibs/NDReadoutMPDTypeAdapter.hpp"
+
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/RecorderModel.hpp"
 #include "readoutlibs/recorderconfig/Nljs.hpp"
@@ -99,7 +99,7 @@ DataRecorder::init(const data_t& args)
     }
 
     // IF MPD
-    if (raw_dt.find("MPD") != std::string::npos) {
+    if (raw_dt.find("MPDFrame") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for mpd";
       recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::MPD_MESSAGE_STRUCT>(get_name()));
       recorder->init(args);
