@@ -16,12 +16,12 @@
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
 #include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
-
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
 
@@ -32,11 +32,14 @@
 using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
+
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIBFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIB2Frame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEData")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEAMCFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
+
 namespace readoutmodules {
 
 std::unique_ptr<readoutlibs::SourceEmulatorConcept>
@@ -66,10 +69,17 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
 
   static constexpr double emu_frame_error_rate = 0.0;
 
-  auto& inst = qi.uid;
+  auto datatypes = dunedaq::iomanager::IOManager::get()->get_datatypes(qi.uid);
+  if (datatypes.size() != 1) {
+    ers::error(dunedaq::readoutlibs::GenericConfigurationError(ERS_HERE,
+      "Multiple output data types specified! Expected only a single type!"));
+  }
+  std::string raw_dt{ *datatypes.begin() };
+  TLOG() << "Choosing specialization for SourceEmulator with raw_input"
+         << " [uid:" << qi.uid << " , data_type:" << raw_dt << ']';
 
   // IF WIBETH
-  if (inst.find("wibeth") != std::string::npos) {
+  if (raw_dt.find("WIBEthFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wibeth link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBEthTypeAdapter>>(
@@ -78,7 +88,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   }
 
   // IF WIB2
-  if (inst.find("wib2") != std::string::npos) {
+  if (raw_dt.find("WIB2Frame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib2 link";
 
     auto source_emu_model =
@@ -88,7 +98,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   }
 
   // IF WIB
-  if (inst.find("wib") != std::string::npos) {
+  if (raw_dt.find("WIBFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>>(
@@ -97,7 +107,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   }
 
   // IF PDS
-  if (inst.find("pds") != std::string::npos) {
+  if (raw_dt.find("PDSFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>>(
@@ -105,19 +115,18 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     return source_emu_model;
   }
 
-  // TP link
-  if (inst.find("tp") != std::string::npos) {
+  // IF TP link
+  if (raw_dt.find("TriggerPrimitive") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tp link";
     auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
     return source_emu_model;
   }
 
   // IF TDE
-  if (inst.find("tde") != std::string::npos) {
+  if (raw_dt.find("TDEAMCFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tde link";
     auto source_emu_model =
-      std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter
->>(
+      std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter>>(
         qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
     return source_emu_model;
   }
