@@ -70,7 +70,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   static constexpr int tde_time_tick_diff = dunedaq::detdataformats::tde::ticks_between_adc_samples*dunedaq::detdataformats::tde::tot_adc16_samples;
   static constexpr double tde_dropout_rate = 0.0;
   static constexpr double tde_rate_khz = 62500./tde_time_tick_diff;
-  static constexpr int tde_frames_per_tick = dunedaq::detdataformats::tde::n_channels_per_frame;
+  static constexpr int tde_frames_per_tick = dunedaq::detdataformats::tde::n_channels_per_amc;
 
   static constexpr double emu_frame_error_rate = 0.0;
 
