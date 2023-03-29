@@ -14,13 +14,13 @@
 
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
-#include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
+//#include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
-#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 
 #include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
@@ -37,7 +37,7 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIB2Frame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEAMCFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEFrameTypeAdapter, "TDEFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
 
 namespace readoutmodules {
@@ -50,22 +50,27 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   static constexpr int daphne_time_tick_diff = 16;
   static constexpr double daphne_dropout_rate = 0.9;
   static constexpr double daphne_rate_khz = 200.0;
+  static constexpr int daphne_frames_per_tick = 1;
 
   static constexpr int wib_time_tick_diff = 25;
   static constexpr double wib_dropout_rate = 0.0;
   static constexpr double wib_rate_khz = 166.0;
+  static constexpr int wib_frames_per_tick = 1;
 
   static constexpr int wib2_time_tick_diff = 32;
   static constexpr double wib2_dropout_rate = 0.0;
   static constexpr double wib2_rate_khz = 166.0;
+  static constexpr int wib2_frames_per_tick = 1;
 
   static constexpr int wibeth_time_tick_diff = 32*64;
   static constexpr double wibeth_dropout_rate = 0.0;
   static constexpr double wibeth_rate_khz = 30.5176;
+  static constexpr int wibeth_frames_per_tick = 1;
 
-  static constexpr int tde_time_tick_diff = 1000;
+  static constexpr int tde_time_tick_diff = dunedaq::detdataformats::tde::ticks_between_adc_samples*dunedaq::detdataformats::tde::tot_adc16_samples;
   static constexpr double tde_dropout_rate = 0.0;
-  static constexpr double tde_rate_khz = 0.43668;
+  static constexpr double tde_rate_khz = 62500./tde_time_tick_diff;
+  static constexpr int tde_frames_per_tick = dunedaq::detdataformats::tde::n_channels_per_amc;
 
   static constexpr double emu_frame_error_rate = 0.0;
 
@@ -83,7 +88,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wibeth link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBEthTypeAdapter>>(
-        qi.name, run_marker, wibeth_time_tick_diff, wibeth_dropout_rate, emu_frame_error_rate, wibeth_rate_khz);
+        qi.name, run_marker, wibeth_time_tick_diff, wibeth_dropout_rate, emu_frame_error_rate, wibeth_rate_khz, wibeth_frames_per_tick);
     return source_emu_model;
   }
 
@@ -93,7 +98,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
 
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter>>(
-        qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, emu_frame_error_rate, wib2_rate_khz);
+        qi.name, run_marker, wib2_time_tick_diff, wib2_dropout_rate, emu_frame_error_rate, wib2_rate_khz, wib2_frames_per_tick);
     return source_emu_model;
   }
 
@@ -102,7 +107,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>>(
-        qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz);
+        qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz, wib_frames_per_tick);
     return source_emu_model;
   }
 
@@ -111,7 +116,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>>(
-        qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz);
+        qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz, daphne_frames_per_tick);
     return source_emu_model;
   }
 
@@ -123,11 +128,11 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   }
 
   // IF TDE
-  if (raw_dt.find("TDEAMCFrame") != std::string::npos) {
+  if (raw_dt.find("TDEFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tde link";
     auto source_emu_model =
-      std::make_unique<fdreadoutlibs::TDECrateSourceEmulatorModel<fdreadoutlibs::types::TDEAMCFrameTypeAdapter>>(
-        qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz);
+      std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::TDEFrameTypeAdapter>>(
+        qi.name, run_marker, tde_time_tick_diff, tde_dropout_rate, emu_frame_error_rate, tde_rate_khz, tde_frames_per_tick);
     return source_emu_model;
   }
 

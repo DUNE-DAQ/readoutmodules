@@ -33,7 +33,7 @@
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNEStreamSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
-#include "fdreadoutlibs/TDEAMCFrameTypeAdapter.hpp"
+#include "fdreadoutlibs/TDEFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter.hpp"
 
@@ -69,7 +69,7 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEt
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNEStreamSuperChunkTypeAdapter, "PDSStreamFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::SSPFrameTypeAdapter, "SSPFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEAMCFrameTypeAdapter, "TDEAMCFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEFrameTypeAdapter, "TDEFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter, "FWTriggerPrimitive")
 DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT, "PACMANFrame")
@@ -188,13 +188,12 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   }
 
   // If TDE
-  if (raw_dt.find("TDEAMCFrame") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE AMC";
+  if (raw_dt.find("TDEFrame") != std::string::npos) {
+    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for TDE";
     auto readout_model = std::make_unique<
-      rol::ReadoutModel<fdt::TDEAMCFrameTypeAdapter,
-                        rol::DefaultRequestHandlerModel<fdt::TDEAMCFrameTypeAdapter,
-                                                        rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter>>,
-                        rol::FixedRateQueueModel<fdt::TDEAMCFrameTypeAdapter>,
+      rol::ReadoutModel<fdt::TDEFrameTypeAdapter,
+                        rol::DefaultSkipListRequestHandler<fdt::TDEFrameTypeAdapter>,
+                        rol::SkipListLatencyBufferModel<fdt::TDEFrameTypeAdapter>,
                         fdl::TDEFrameProcessor>>(run_marker);
     readout_model->init(args);
     return readout_model;
