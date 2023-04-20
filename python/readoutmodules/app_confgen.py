@@ -36,7 +36,7 @@ QUEUE_POP_WAIT_MS = 100
 
 def generate(
     DRO_CONFIG=None,
-    CLOCK_SPEED_HZ=50000000,
+    CLOCK_SPEED_HZ=62500000,
     DATA_RATE_SLOWDOWN_FACTOR=1,
     DATA_FILE="./frames.bin",
     TP_DATA_FILE="./tp_frames.bin",
