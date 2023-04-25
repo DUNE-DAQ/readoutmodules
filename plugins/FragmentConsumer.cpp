@@ -14,8 +14,8 @@
 #include "DummyConsumer.hpp"
 #include "DummyConsumer.cpp"
 #include "daqdataformats/Fragment.hpp"
-#include "detdataformats/wib/WIBFrame.hpp"
-#include "detdataformats/daphne/DAPHNEFrame.hpp"
+#include "fddetdataformats/WIBFrame.hpp"
+#include "fddetdataformats/DAPHNEFrame.hpp"
 
 
 #include <memory>
@@ -49,14 +49,14 @@ public:
       return;
     } else if ((fragment.get_header().fragment_type ==
                 static_cast<daqdataformats::fragment_type_t>(daqdataformats::FragmentType::kProtoWIB)) ||
-               (static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
-      int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / sizeof(detdataformats::wib::WIBFrame);
+               (static_cast<fddetdataformats::WIBFrame*>(fragment.get_data())->get_wib_header()->sof == 0)) {
+      int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / sizeof(fddetdataformats::WIBFrame);
       auto window_begin = fragment.get_header().window_begin;
       auto window_end = fragment.get_header().window_end;
 
-      detdataformats::wib::WIBFrame* first_frame = static_cast<detdataformats::wib::WIBFrame*>(fragment.get_data());
-      detdataformats::wib::WIBFrame* last_frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
-        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * sizeof(detdataformats::wib::WIBFrame));                          // NOLINT
+      fddetdataformats::WIBFrame* first_frame = static_cast<fddetdataformats::WIBFrame*>(fragment.get_data());
+      fddetdataformats::WIBFrame* last_frame = reinterpret_cast<fddetdataformats::WIBFrame*>( // NOLINT
+        static_cast<char*>(fragment.get_data()) + (num_frames - 1) * sizeof(fddetdataformats::WIBFrame));                          // NOLINT
 
       if (!((first_frame->get_timestamp() >= window_begin) && (first_frame->get_timestamp() < window_begin + 25))) {
         TLOG() << "First fragment not correctly aligned";
@@ -66,8 +66,8 @@ public:
       }
 
       for (int i = 0; i < num_frames; ++i) {
-        detdataformats::wib::WIBFrame* frame = reinterpret_cast<detdataformats::wib::WIBFrame*>( // NOLINT
-          static_cast<char*>(fragment.get_data()) + (i * sizeof(detdataformats::wib::WIBFrame)));
+        fddetdataformats::WIBFrame* frame = reinterpret_cast<fddetdataformats::WIBFrame*>( // NOLINT
+          static_cast<char*>(fragment.get_data()) + (i * sizeof(fddetdataformats::WIBFrame)));
         if (frame->get_timestamp() < fragment.get_header().window_begin ||
             frame->get_timestamp() >= fragment.get_header().window_end) {
           TLOG() << "Fragment validation encountered frame not fitting the requested window";
@@ -78,7 +78,7 @@ public:
       int num_frames = (fragment.get_size() - sizeof(daqdataformats::FragmentHeader)) / 584;
 
       for (int i = 0; i < num_frames; ++i) {
-        detdataformats::daphne::DAPHNEFrame* frame = reinterpret_cast<detdataformats::daphne::DAPHNEFrame*>( // NOLINT
+        fddetdataformats::DAPHNEFrame* frame = reinterpret_cast<fddetdataformats::DAPHNEFrame*>( // NOLINT
           static_cast<char*>(fragment.get_data()) + (i * 584));
         if (frame->get_timestamp() < fragment.get_header().window_begin ||
             frame->get_timestamp() >= fragment.get_header().window_end) {
