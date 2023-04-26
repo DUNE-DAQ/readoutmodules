@@ -14,6 +14,7 @@ find_package(fdreadoutlibs REQUIRED)
 find_package(ndreadoutlibs REQUIRED)
 find_package(daqdataformats REQUIRED)
 find_package(detdataformats REQUIRED)
+find_package(fddetdataformats REQUIRED)
 find_package(dfmessages REQUIRED)
 find_package(daqconf REQUIRED)
 find_package(folly REQUIRED)
@@ -38,6 +39,7 @@ set(READOUTMODULES_DEPENDENCIES
   opmonlib::opmonlib
   daqdataformats::daqdataformats
   detdataformats::detdataformats
+  fddetdataformats::fddetdataformats
 )
 
 set(FDREADOUTLIBS_USE_INTRINSICS ON)

@@ -8,7 +8,7 @@
 
 #include "DummyConsumer.cpp"
 #include "DummyConsumer.hpp"
-#include "detdataformats/wib/WIBFrame.hpp"
+#include "fddetdataformats/WIBFrame.hpp"
 #include "logging/Logging.hpp"
 #include "readoutlibs/ReadoutLogging.hpp"
 
@@ -19,18 +19,18 @@
 
 namespace dunedaq {
 
-    DUNE_DAQ_TYPESTRING(detdataformats::wib::WIBFrame, "WIBFrame")
+    DUNE_DAQ_TYPESTRING(fddetdataformats::WIBFrame, "WIBFrame")
 
 namespace readoutmodules {
 
-class ErroredFrameConsumer : public DummyConsumer<detdataformats::wib::WIBFrame>
+class ErroredFrameConsumer : public DummyConsumer<fddetdataformats::WIBFrame>
 {
 public:
   explicit ErroredFrameConsumer(const std::string name)
-    : DummyConsumer<detdataformats::wib::WIBFrame>(name)
+    : DummyConsumer<fddetdataformats::WIBFrame>(name)
   {}
 
-  void packet_callback(detdataformats::wib::WIBFrame& packet) override
+  void packet_callback(fddetdataformats::WIBFrame& packet) override
   {
     if (packet.get_wib_header()->wib_errors) {
       m_error_count += std::bitset<16>(packet.get_wib_header()->wib_errors).count();
