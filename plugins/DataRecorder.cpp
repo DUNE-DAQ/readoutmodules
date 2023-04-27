@@ -93,7 +93,7 @@ DataRecorder::init(const data_t& args)
     // IF PACMAN
     if (raw_dt.find("PACMANFrame") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for pacman";
-      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::NDReadoutPACMANTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }
@@ -101,7 +101,7 @@ DataRecorder::init(const data_t& args)
     // IF MPD
     if (raw_dt.find("MPDFrame") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for mpd";
-      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::MPD_MESSAGE_STRUCT>(get_name()));
+      recorder.reset(new readoutlibs::RecorderModel<ndreadoutlibs::types::NDReadoutMPDTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }

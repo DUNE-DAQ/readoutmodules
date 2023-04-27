@@ -72,8 +72,8 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::SSPFrameTypeAdapter, "SSPFram
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEFrameTypeAdapter, "TDEFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter, "FWTriggerPrimitive")
-DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::PACMAN_MESSAGE_STRUCT, "PACMANFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::MPD_MESSAGE_STRUCT, "MPDFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::NDReadoutPACMANTypeAdapter, "PACMANFrame")
+DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::NDReadoutMPDTypeAdapter, "MPDFrame")
 
 namespace readoutmodules {
 
@@ -227,9 +227,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   if (raw_dt.find("PACMANFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a pacman";
     auto readout_model =
-      std::make_unique<rol::ReadoutModel<ndt::PACMAN_MESSAGE_STRUCT,
+      std::make_unique<rol::ReadoutModel<ndt::NDReadoutPACMANTypeAdapter,
                                          ndreadoutlibs::PACMANListRequestHandler,
-                                         rol::SkipListLatencyBufferModel<ndt::PACMAN_MESSAGE_STRUCT>,
+                                         rol::SkipListLatencyBufferModel<ndt::NDReadoutPACMANTypeAdapter>,
                                          ndreadoutlibs::PACMANFrameProcessor>>(run_marker);
     readout_model->init(args);
     return readout_model;
@@ -239,9 +239,9 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
   if (raw_dt.find("MPDFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for a mpd";
     auto readout_model =
-    std::make_unique<rol::ReadoutModel<ndt::MPD_MESSAGE_STRUCT,
+    std::make_unique<rol::ReadoutModel<ndt::NDReadoutMPDTypeAdapter,
                                        ndreadoutlibs::MPDListRequestHandler,
-                                       rol::SkipListLatencyBufferModel<ndt::MPD_MESSAGE_STRUCT>,
+                                       rol::SkipListLatencyBufferModel<ndt::NDReadoutMPDTypeAdapter>,
                                        ndreadoutlibs::MPDFrameProcessor>>(run_marker);
     readout_model->init(args);
     return readout_model;
