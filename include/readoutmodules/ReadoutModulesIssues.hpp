@@ -21,6 +21,11 @@ ERS_DECLARE_ISSUE(readoutmodules,
                   ((daqdataformats::SourceID)sid)((std::string)error))
 
 ERS_DECLARE_ISSUE(readoutmodules,
+                  ReadoutCreatorCreationFailed,
+                  "Couldn't create ReadoutCreator: " << errorstr,
+                  ((std::string)errorstr))
+
+ERS_DECLARE_ISSUE(readoutmodules,
                   CommandError,
                   "SourceID[" << sid << "] Command Error: " << commanderror,
                   ((daqdataformats::SourceID)sid)((std::string)commanderror))

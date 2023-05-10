@@ -52,11 +52,14 @@ endif()
 ##############################################################################
 # Main library
 daq_add_library(
+  ReadoutCreator.cpp
   LINK_LIBRARIES ${READOUTMODULES_DEPENDENCIES}
 )
 
 ##############################################################################
 # Plugins
+daq_add_plugin(fdReadoutCreator duneReadoutCreator LINK_LIBRARIES readoutmodules)
+daq_add_plugin(ndReadoutCreator duneReadoutCreator LINK_LIBRARIES readoutmodules)
 daq_add_plugin(FakeCardReader duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(DataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
 daq_add_plugin(DataRecorder duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
