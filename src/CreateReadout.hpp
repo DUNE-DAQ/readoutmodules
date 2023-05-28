@@ -27,7 +27,7 @@
 #include "readoutlibs/models/DefaultSkipListRequestHandler.hpp"
 #include "readoutlibs/models/SkipListLatencyBufferModel.hpp"
 
-#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+//#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
@@ -35,19 +35,17 @@
 #include "fdreadoutlibs/SSPFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEFrameTypeAdapter.hpp"
 #include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
-#include "fdreadoutlibs/DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter.hpp"
 
 #include "fdreadoutlibs/daphne/DAPHNEFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEStreamFrameProcessor.hpp"
 #include "fdreadoutlibs/daphne/DAPHNEListRequestHandler.hpp"
 #include "fdreadoutlibs/ssp/SSPFrameProcessor.hpp"
-#include "fdreadoutlibs/wib2/RAWWIBTriggerPrimitiveProcessor.hpp"
 //#include "fdreadoutlibs/wib2/SWWIB2TriggerPrimitiveProcessor.hpp"
 #include "fdreadoutlibs/wib2/WIB2FrameProcessor.hpp"
-#include "fdreadoutlibs/wib2/TPRequestHandler.hpp"
+#include "fdreadoutlibs/TPCTPRequestHandler.hpp"
 #include "fdreadoutlibs/wibeth/WIBEthFrameProcessor.hpp"
 #include "fdreadoutlibs/tde/TDEFrameProcessor.hpp"
-#include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
+//#include "fdreadoutlibs/wib/WIBFrameProcessor.hpp"
 
 #include "ndreadoutlibs/NDReadoutPACMANTypeAdapter.hpp"
 #include "ndreadoutlibs/NDReadoutMPDTypeAdapter.hpp"
@@ -64,7 +62,7 @@ using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
 
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
+//DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIB2Frame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
@@ -72,7 +70,7 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNEStreamSuperChunkTypeAda
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::SSPFrameTypeAdapter, "SSPFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEFrameTypeAdapter, "TDEFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter, "FWTriggerPrimitive")
+//DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter, "FWTriggerPrimitive")
 DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::NDReadoutPACMANTypeAdapter, "PACMANFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::ndreadoutlibs::types::NDReadoutMPDTypeAdapter, "MPDFrame")
 
@@ -99,7 +97,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
          << " [uid:" << ci["raw_input"] << " , data_type:" << raw_dt << ']';
 
   // Chose readout specializations based on DataType
-  // IF WIB
+  /* IF WIB
   if (raw_dt.find("WIBFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating readout for ProtoDUNE-WIB";
     auto readout_model = std::make_unique<rol::ReadoutModel<
@@ -111,6 +109,7 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
     readout_model->init(args);
     return readout_model;
   }
+*/
 
   // IF WIB2
   if (raw_dt.find("WIB2Frame") != std::string::npos) {
@@ -200,26 +199,14 @@ createReadout(const nlohmann::json& args, std::atomic<bool>& run_marker)
     return readout_model;
   }
 
-  // IF TriggerPrimitive (SW-TPG)
+  // IF TriggerPrimitive (TPG)
   if (raw_dt.find("TriggerPrimitive") != std::string::npos) {
     TLOG(TLVL_WORK_STEPS) << "Creating readout for TriggerPrimitive";
     auto readout_model = std::make_unique<rol::ReadoutModel<
       fdt::TriggerPrimitiveTypeAdapter,
-      fdl::TPRequestHandler,
+      fdl::TPCTPRequestHandler,
       rol::SkipListLatencyBufferModel<fdt::TriggerPrimitiveTypeAdapter>,
       rol::TaskRawDataProcessorModel<fdt::TriggerPrimitiveTypeAdapter>>>(run_marker);
-    readout_model->init(args);
-    return readout_model;
-  }
-
-  // IF TriggerPrimitive (FW-TPG)
-  if (raw_dt.find("FWTriggerPrimitive") != std::string::npos) {
-    TLOG(TLVL_WORK_STEPS) << "Creating readout for TriggerPrimitive (FW-TPG)";
-    auto readout_model = std::make_unique<rol::ReadoutModel<
-      fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter,
-      rol::DefaultSkipListRequestHandler<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
-      rol::SkipListLatencyBufferModel<fdt::DUNEWIBFirmwareTriggerPrimitiveSuperChunkTypeAdapter>,
-      fdl::RAWWIBTriggerPrimitiveProcessor>>(run_marker);
     readout_model->init(args);
     return readout_model;
   }
