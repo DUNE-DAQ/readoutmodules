@@ -14,16 +14,13 @@
 
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
-//#include "fdreadoutlibs/tde/TDECrateSourceEmulatorModel.hpp"
 
 #include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEFrameTypeAdapter.hpp"
-#include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
-
-#include "fdreadoutlibs/wib/TPEmulatorModel.hpp"
+//#include "fdreadoutlibs/TriggerPrimitiveTypeAdapter.hpp"
 
 #include <memory>
 #include <string>
@@ -38,7 +35,7 @@ DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter,
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TDEFrameTypeAdapter, "TDEFrame")
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
+//DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::TriggerPrimitiveTypeAdapter, "TriggerPrimitive")
 
 namespace readoutmodules {
 
@@ -117,13 +114,6 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     auto source_emu_model =
       std::make_unique<readoutlibs::SourceEmulatorModel<fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter>>(
         qi.name, run_marker, daphne_time_tick_diff, daphne_dropout_rate, emu_frame_error_rate, daphne_rate_khz, daphne_frames_per_tick);
-    return source_emu_model;
-  }
-
-  // IF TP link
-  if (raw_dt.find("TriggerPrimitive") != std::string::npos) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake tp link";
-    auto source_emu_model = std::make_unique<fdreadoutlibs::TPEmulatorModel>(run_marker, 66.0);
     return source_emu_model;
   }
 
