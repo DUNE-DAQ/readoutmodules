@@ -15,7 +15,7 @@
 #include "readoutlibs/ReadoutLogging.hpp"
 #include "readoutlibs/models/SourceEmulatorModel.hpp"
 
-#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+//#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/DAPHNESuperChunkTypeAdapter.hpp"
@@ -30,7 +30,7 @@ using dunedaq::readoutlibs::logging::TLVL_WORK_STEPS;
 
 namespace dunedaq {
 
-DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
+//DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter, "WIBFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBSuperChunkTypeAdapter, "WIB2Frame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DUNEWIBEthTypeAdapter, "WIBEthFrame")
 DUNE_DAQ_TYPESTRING(dunedaq::fdreadoutlibs::types::DAPHNESuperChunkTypeAdapter, "PDSFrame")
@@ -99,7 +99,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
     return source_emu_model;
   }
 
-  // IF WIB
+  /* IF WIB
   if (raw_dt.find("WIBFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake wib link";
     auto source_emu_model =
@@ -107,7 +107,7 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
         qi.name, run_marker, wib_time_tick_diff, wib_dropout_rate, emu_frame_error_rate, wib_rate_khz, wib_frames_per_tick);
     return source_emu_model;
   }
-
+  */
   // IF PDS
   if (raw_dt.find("PDSFrame") != std::string::npos) {
     TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating fake pds link";
