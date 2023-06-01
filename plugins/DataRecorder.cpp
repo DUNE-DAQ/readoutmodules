@@ -7,7 +7,7 @@
  */
 //#include "readout/NDReadoutTypes.hpp"
 
-#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
+//#include "fdreadoutlibs/ProtoWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBSuperChunkTypeAdapter.hpp"
 #include "fdreadoutlibs/DUNEWIBEthTypeAdapter.hpp"
 #include "fdreadoutlibs/TDEFrameTypeAdapter.hpp"
@@ -66,13 +66,14 @@ DataRecorder::init(const data_t& args)
       return;
     }
 
-    // IF WIB
+    /* IF WIB
     if (raw_dt.find("WIBFrame") != std::string::npos) {
       TLOG_DEBUG(TLVL_WORK_STEPS) << "Creating recorder for wib";
       recorder.reset(new readoutlibs::RecorderModel<fdreadoutlibs::types::ProtoWIBSuperChunkTypeAdapter>(get_name()));
       recorder->init(args);
       return;
     }
+    */
 
     // IF WIBEth
     if (raw_dt.find("WIBEthFrame") != std::string::npos) {
