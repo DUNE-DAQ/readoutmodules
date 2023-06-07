@@ -59,6 +59,8 @@ daq_add_library(
 # Plugins
 daq_add_plugin(FakeCardReader duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(DataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
+daq_add_plugin(FDDataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules)
+daq_add_plugin(NDDataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(DataRecorder duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
 daq_add_plugin(FragmentConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
 daq_add_plugin(TimeSyncConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
