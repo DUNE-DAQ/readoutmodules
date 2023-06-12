@@ -49,10 +49,10 @@ createSourceEmulator(const appfwk::app::ConnectionReference qi, std::atomic<bool
   static constexpr double daphne_rate_khz = 200.0;
   static constexpr int daphne_frames_per_tick = 1;
 
-  static constexpr int wib_time_tick_diff = 25;
-  static constexpr double wib_dropout_rate = 0.0;
-  static constexpr double wib_rate_khz = 166.0;
-  static constexpr int wib_frames_per_tick = 1;
+  //static constexpr int wib_time_tick_diff = 25;
+  //static constexpr double wib_dropout_rate = 0.0;
+  //static constexpr double wib_rate_khz = 166.0;
+  //static constexpr int wib_frames_per_tick = 1;
 
   static constexpr int wib2_time_tick_diff = 32;
   static constexpr double wib2_dropout_rate = 0.0;
