@@ -15,15 +15,12 @@
 // package
 #include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
 #include "readoutlibs/sourceemulatorconfig/Structs.hpp"
+#include "readoutlibs/sourceemulatorconfig/Nljs.hpp"
 #include "readoutlibs/utils/ReusableThread.hpp"
 #include "readoutlibs/utils/FileSourceBuffer.hpp"
 
-// appfwk
-#include "appfwk/app/Nljs.hpp"
-#include "appfwk/cmd/Nljs.hpp"
-#include "appfwk/cmd/Structs.hpp"
-#include "appfwk/DAQModule.hpp"
-#include "iomanager/IOManager.hpp"
+#include "nlohmann/json.hpp"
+#include "rcif/cmd/Nljs.hpp"
 
 // std
 #include <cstdint>
@@ -51,18 +48,20 @@ public:
   FakeCardReaderBase(FakeCardReaderBase&&) = delete;                 ///< FakeCardReaderBase is not move-constructible
   FakeCardReaderBase& operator=(FakeCardReaderBase&&) = delete;      ///< FakeCardReaderBase is not move-assignable
 
-  void init(const data_t&) override;
-  void get_info(opmonlib::InfoCollector& ci, int level) override;
+  void init(const nlohmann::json&);
+  void get_info(opmonlib::InfoCollector& ci, int level);
 
   // To be implemented by final module
   virtual std::unique_ptr<readoutlibs::SourceEmulatorConcept>
   create_source_emulator(const appfwk::app::ConnectionReference qi, std::atomic<bool>& run_marker) = 0;
 
   // Commands
-  void do_conf(const data_t& /*args*/);
-  void do_scrap(const data_t& /*args*/);
-  void do_start(const data_t& /*args*/);
-  void do_stop(const data_t& /*args*/);
+  void do_conf(const nlohmann::json& /*args*/);
+  void do_scrap(const nlohmann::json& /*args*/);
+  void do_start(const nlohmann::json& /*args*/);
+  void do_stop(const nlohmann::json& /*args*/);
+
+  std::string get_fcr_name() { return m_name; }
 
 private:
   // Configuration

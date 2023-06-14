@@ -15,29 +15,29 @@ FakeCardReaderBase::FakeCardReaderBase(const std::string& name)
 }
 
 void
-FakeCardReaderBase::init(const data_t& args)
+FakeCardReaderBase::init(const nlohmann::json& args)
 {
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering init() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering init() method";
   auto ini = args.get<appfwk::app::ModInit>();
   for (const auto& qi : ini.conn_refs) {
     
     try {
       if (m_source_emus.find(qi.name) != m_source_emus.end()) {
-        TLOG() << get_name() << "Same queue instance used twice";
-        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
+        TLOG() << get_fcr_name() << "Same queue instance used twice";
+        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_fcr_name(), args.dump());
       }
-      m_source_emus[qi.name] = createSourceEmulator(qi, m_run_marker);
+      m_source_emus[qi.name] = create_source_emulator(qi, m_run_marker);
       if (m_source_emus[qi.name].get() == nullptr) {
-        TLOG() << get_name() << "Source emulator could not be created";
-        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_name(), args.dump());
+        TLOG() << get_fcr_name() << "Source emulator could not be created";
+        throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_fcr_name(), args.dump());
       }
       m_source_emus[qi.name]->init(args);
       m_source_emus[qi.name]->set_sender(qi.uid);
     } catch (const ers::Issue& excpt) {
-      throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_name(), excpt);
+      throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_fcr_name(), excpt);
     }
   }
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting init() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Exiting init() method";
 }
 
 void
@@ -50,12 +50,12 @@ FakeCardReaderBase::get_info(opmonlib::InfoCollector& ci, int level)
 }
 
 void
-FakeCardReaderBase::do_conf(const data_t& args)
+FakeCardReaderBase::do_conf(const nlohmann::json& args)
 {
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering do_conf() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering do_conf() method";
 
   if (m_configured) {
-    TLOG_DEBUG(TLVL_WORK_STEPS) << "This module is already configured!";
+    TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_WORK_STEPS) << "This module is already configured!";
   } else {
     m_cfg = args.get<readoutlibs::sourceemulatorconfig::Conf>();
 
@@ -81,13 +81,13 @@ FakeCardReaderBase::do_conf(const data_t& args)
     m_configured = true;
   }
 
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting do_conf() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Exiting do_conf() method";
 }
 
 void
-FakeCardReaderBase::do_scrap(const data_t& args)
+FakeCardReaderBase::do_scrap(const nlohmann::json& args)
 {
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering do_scrap() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering do_scrap() method";
 
   for (auto& [name, emu] : m_source_emus) {
     emu->scrap(args);
@@ -95,12 +95,12 @@ FakeCardReaderBase::do_scrap(const data_t& args)
 
   m_configured = false;
 
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting do_scrap() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Exiting do_scrap() method";
 }
 void
-FakeCardReaderBase::do_start(const data_t& args)
+FakeCardReaderBase::do_start(const nlohmann::json& args)
 {
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering do_start() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering do_start() method";
 
   m_run_marker.store(true);
 
@@ -108,13 +108,13 @@ FakeCardReaderBase::do_start(const data_t& args)
     emu->start(args);
   }
 
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting do_start() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Exiting do_start() method";
 }
 
 void
-FakeCardReaderBase::do_stop(const data_t& args)
+FakeCardReaderBase::do_stop(const nlohmann::json& args)
 {
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Entering do_stop() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering do_stop() method";
 
   m_run_marker = false;
 
@@ -122,7 +122,7 @@ FakeCardReaderBase::do_stop(const data_t& args)
     emu->stop(args);
   }
 
-  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_name() << ": Exiting do_stop() method";
+  TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Exiting do_stop() method";
 }
 
 } // namespace readoutmodules
