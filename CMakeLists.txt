@@ -10,19 +10,16 @@ find_package(appfwk REQUIRED)
 find_package(logging REQUIRED)
 find_package(opmonlib REQUIRED)
 find_package(readoutlibs REQUIRED)
-find_package(fdreadoutlibs REQUIRED)
-find_package(ndreadoutlibs REQUIRED)
 find_package(daqdataformats REQUIRED)
 find_package(detdataformats REQUIRED)
-find_package(fddetdataformats REQUIRED)
 find_package(dfmessages REQUIRED)
 find_package(daqconf REQUIRED)
 find_package(folly REQUIRED)
 find_package(Boost COMPONENTS iostreams REQUIRED)
 set(BOOST_LIBS Boost::iostreams ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_LIBRARIES})
 
-daq_codegen( TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
-daq_codegen( *info.jsonnet DEP_PKGS opmonlib TEMPLATES opmonlib/InfoStructs.hpp.j2 opmonlib/InfoNljs.hpp.j2 )
+#daq_codegen( TEMPLATES Structs.hpp.j2 Nljs.hpp.j2 )
+#daq_codegen( *info.jsonnet DEP_PKGS opmonlib TEMPLATES opmonlib/InfoStructs.hpp.j2 opmonlib/InfoNljs.hpp.j2 )
 
 ##############################################################################
 # Dependency sets
@@ -34,12 +31,9 @@ set(READOUTMODULES_DEPENDENCIES
 #dunedaq
   appfwk::appfwk
   readoutlibs::readoutlibs
-  fdreadoutlibs::fdreadoutlibs
-  ndreadoutlibs::ndreadoutlibs
   opmonlib::opmonlib
   daqdataformats::daqdataformats
   detdataformats::detdataformats
-  fddetdataformats::fddetdataformats
 )
 
 set(FDREADOUTLIBS_USE_INTRINSICS ON)
@@ -51,19 +45,11 @@ endif()
 
 ##############################################################################
 # Main library
-daq_add_library(
-  LINK_LIBRARIES ${READOUTMODULES_DEPENDENCIES}
-)
+daq_add_library( LINK_LIBRARIES ${READOUTMODULES_DEPENDENCIES})
 
 ##############################################################################
 # Plugins
-daq_add_plugin(FakeCardReader duneDAQModule LINK_LIBRARIES readoutmodules)
-daq_add_plugin(DataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
-daq_add_plugin(DataRecorder duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
-daq_add_plugin(FragmentConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
-daq_add_plugin(TimeSyncConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
-daq_add_plugin(ErroredFrameConsumer duneDAQModule LINK_LIBRARIES readoutmodules)
-#daq_add_plugin(FragmentSender duneDAQModule LINK_LIBRARIES readoutmodules)
+#daq_add_plugin(DataLinkHandler duneDAQModule LINK_LIBRARIES readoutmodules ${BOOST_LIBS})
 
 ##############################################################################
 # Integration tests
