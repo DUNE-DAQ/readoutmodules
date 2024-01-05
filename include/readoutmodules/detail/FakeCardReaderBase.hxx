@@ -15,15 +15,15 @@ FakeCardReaderBase::FakeCardReaderBase(const std::string& name)
 }
 
 void
-FakeCardReaderBase::init(std::shared_ptr<ModuleConfiguration> cfg)
+FakeCardReaderBase::init(std::shared_ptr<appfwk::ModuleConfiguration> cfg)
 {
   m_cfg = cfg;
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering init() method";
   //auto ini = args.get<appfwk::app::ModInit>();
-  auto ini = cfg->module<appdal::DataReader>(get_name());
-  if (ini != nullptr && ini->get_emulated()) {
+  auto ini = cfg->module<appdal::DataReader>(m_name);
+  if (ini != nullptr && ini->get_configuration()->get_emulation_mode()) {
 
-    for (const auto& qi : ini->get_outputs()) {
+    for (auto qi : ini->get_outputs()) {
       
       try {
         if (m_source_emus.find(qi->UID()) != m_source_emus.end()) {
@@ -38,7 +38,7 @@ FakeCardReaderBase::init(std::shared_ptr<ModuleConfiguration> cfg)
         // m_source_emus[qi->UID()]->init(cfg);
         m_source_emus[qi->UID()]->set_sender(qi->UID());
       } catch (const ers::Issue& excpt) {
-        throw readoutlibs::ResourceQueueError(ERS_HERE, qi.name, get_fcr_name(), excpt);
+        throw readoutlibs::ResourceQueueError(ERS_HERE, qi->UID(), get_fcr_name(), excpt);
       }
     }
   }
@@ -55,27 +55,27 @@ FakeCardReaderBase::get_info(opmonlib::InfoCollector& ci, int level)
 }
 
 void
-FakeCardReaderBase::do_conf(const nlohmann::json& args)
+FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
 {
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering do_conf() method";
 
   if (m_configured) {
     TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_WORK_STEPS) << "This module is already configured!";
   } else {
-    auto cfg = m_cfg->module(get_fcr_name());
+    auto cfg = m_cfg->module<appdal::DataReader>(get_fcr_name());
 
-    std::map<uint32_t src_id, coredal::DROStreamConf*> streams;
+    std::map<uint32_t, const coredal::DROStreamConf*> streams;
     for (const auto & readout_if : cfg->get_interfaces()) {
       for (const auto& data_stream : readout_if->get_contains()) {
-        auto dro_stream = data_stream.cast<coredal::DROStreamConf>;
+        auto dro_stream = data_stream->cast<coredal::DROStreamConf>();
         if (dro_stream != nullptr) {
           streams[dro_stream->get_src_id()] = dro_stream;
         } 
       }
     }
 
-    for (const auto& qi : ini->get_outputs()) {
-      auto q_with_id = qi.cast<coredal::QueueWithId>;
+    for (const auto& qi : cfg->get_outputs()) {
+      auto q_with_id = qi->cast<coredal::QueueWithId>();
       if (q_with_id == nullptr) {
         throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_fcr_name(), "Queue is not of type QueueWithId");
       }  
@@ -87,7 +87,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& args)
         TLOG() << "Emulator for queue name " << q_with_id->UID() << " was already configured";
         throw readoutlibs::GenericConfigurationError(ERS_HERE, "Emulator configured twice: " + q_with_id->UID());
       }
-      m_source_emus[q_with_id->UID()]->conf(stream[q_with_id->get_id()]);
+      m_source_emus[q_with_id->UID()]->conf(streams[q_with_id->get_id()]);
     }
     for (auto& [name, emu] : m_source_emus) {
       if (!emu->is_configured()) {

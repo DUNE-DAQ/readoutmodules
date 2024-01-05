@@ -17,6 +17,14 @@
 //#include "readoutlibs/sourceemulatorconfig/Structs.hpp"
 //#include "readoutlibs/sourceemulatorconfig/Nljs.hpp"
 
+#include "coredal/DaqModule.hpp"
+#include "coredal/Connection.hpp"
+#include "coredal/ReadoutInterface.hpp"
+#include "coredal/QueueWithId.hpp"
+#include "coredal/DROStreamConf.hpp"
+#include "appdal/DataReader.hpp"
+#include "appdal/DataReaderConf.hpp"
+
 #include "appfwk/ModuleConfiguration.hpp"
 
 #include "readoutlibs/utils/ReusableThread.hpp"
@@ -51,12 +59,12 @@ public:
   FakeCardReaderBase(FakeCardReaderBase&&) = delete;                 ///< FakeCardReaderBase is not move-constructible
   FakeCardReaderBase& operator=(FakeCardReaderBase&&) = delete;      ///< FakeCardReaderBase is not move-assignable
 
-  void init(std::shared_ptr<ModuleConfiguration> cfg);
+  void init(std::shared_ptr<appfwk::ModuleConfiguration> cfg);
   void get_info(opmonlib::InfoCollector& ci, int level);
 
   // To be implemented by final module
   virtual std::unique_ptr<readoutlibs::SourceEmulatorConcept>
-  create_source_emulator(string qi, std::atomic<bool>& run_marker) = 0;
+  create_source_emulator(std::string qi, std::atomic<bool>& run_marker) = 0;
 
   // Commands
   void do_conf(const nlohmann::json& /*args*/);
@@ -70,7 +78,7 @@ private:
   // Configuration
   bool m_configured;
   std::string m_name;
-  std::shared_ptr<ModuleConfiguration> m_cfg;
+  std::shared_ptr<appfwk::ModuleConfiguration> m_cfg;
 
   std::map<std::string, std::unique_ptr<readoutlibs::SourceEmulatorConcept>> m_source_emus;
 

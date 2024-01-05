@@ -18,11 +18,11 @@ DataLinkHandlerBase::DataLinkHandlerBase(const std::string& name)
 
 
 void
-DataLinkHandlerBase::init(std::shared_ptr<ModuleConfiguration> cfg)
+DataLinkHandlerBase::init(std::shared_ptr<appfwk::ModuleConfiguration> cfg)
 {
   
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_dlh_name() << ": Entering init() method";
-  const appdal::ReadoutModule* modconf = cfg->module(get_dlh_name()).cast<appdal::ReadoutModule>;
+  const appdal::ReadoutModule* modconf = cfg->module<appdal::ReadoutModule>(get_dlh_name());
   if(modconf == nullptr) {
     throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), "not a ReadoutModule");
   }
