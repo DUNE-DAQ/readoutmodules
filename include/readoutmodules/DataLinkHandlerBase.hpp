@@ -20,6 +20,8 @@
 #include "nlohmann/json.hpp"
 #include "rcif/cmd/Nljs.hpp"
 
+#include "appfwk/ModuleConfiguration.hpp"
+
 #include <chrono>
 #include <memory>
 #include <string>
@@ -43,7 +45,7 @@ public:
   DataLinkHandlerBase(DataLinkHandlerBase&&) = delete;                 ///< DataLinkHandlerBase is not move-constructible
   DataLinkHandlerBase& operator=(DataLinkHandlerBase&&) = delete;      ///< DataLinkHandlerBase is not move-assignable
 
-  void init(const nlohmann::json& args);
+  void init(std::shared_ptr<ModuleConfiguration> cfg);
   void get_info(opmonlib::InfoCollector& ci, int level);
 
   virtual std::unique_ptr<dunedaq::readoutlibs::ReadoutConcept>
