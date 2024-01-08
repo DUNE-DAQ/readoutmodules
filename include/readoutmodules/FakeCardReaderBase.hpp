@@ -21,7 +21,6 @@
 #include "coredal/Connection.hpp"
 #include "coredal/ReadoutInterface.hpp"
 #include "coredal/QueueWithId.hpp"
-#include "coredal/DROStreamConf.hpp"
 #include "appdal/DataReader.hpp"
 #include "appdal/DataReaderConf.hpp"
 

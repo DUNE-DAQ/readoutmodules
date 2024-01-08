@@ -87,7 +87,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
         TLOG() << "Emulator for queue name " << q_with_id->UID() << " was already configured";
         throw readoutlibs::GenericConfigurationError(ERS_HERE, "Emulator configured twice: " + q_with_id->UID());
       }
-      m_source_emus[q_with_id->UID()]->conf(streams[q_with_id->get_id()]);
+      m_source_emus[q_with_id->UID()]->conf(streams[q_with_id->get_id()], cfg->get_configuration()->get_emulation_conf());
     }
     for (auto& [name, emu] : m_source_emus) {
       if (!emu->is_configured()) {
