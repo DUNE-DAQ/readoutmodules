@@ -69,7 +69,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
       for (const auto& data_stream : readout_if->get_contains()) {
         auto dro_stream = data_stream->cast<coredal::DROStreamConf>();
         if (dro_stream != nullptr) {
-          streams[dro_stream->get_src_id()] = dro_stream;
+          streams[dro_stream->get_source_id()] = dro_stream;
         } 
       }
     }
@@ -87,7 +87,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
         TLOG() << "Emulator for queue name " << q_with_id->UID() << " was already configured";
         throw readoutlibs::GenericConfigurationError(ERS_HERE, "Emulator configured twice: " + q_with_id->UID());
       }
-      m_source_emus[q_with_id->UID()]->conf(streams[q_with_id->get_id()], cfg->get_configuration()->get_emulation_conf());
+      m_source_emus[q_with_id->UID()]->conf(streams[q_with_id->get_source_id()], cfg->get_configuration()->get_emulation_conf());
     }
     for (auto& [name, emu] : m_source_emus) {
       if (!emu->is_configured()) {
