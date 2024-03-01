@@ -20,6 +20,9 @@
 #include "nlohmann/json.hpp"
 #include "rcif/cmd/Nljs.hpp"
 
+#include "appfwk/ModuleConfiguration.hpp"
+#include "appdal/ReadoutModule.hpp"
+
 #include <chrono>
 #include <memory>
 #include <string>
@@ -43,11 +46,11 @@ public:
   DataLinkHandlerBase(DataLinkHandlerBase&&) = delete;                 ///< DataLinkHandlerBase is not move-constructible
   DataLinkHandlerBase& operator=(DataLinkHandlerBase&&) = delete;      ///< DataLinkHandlerBase is not move-assignable
 
-  void init(const nlohmann::json& args);
+  void init(std::shared_ptr<appfwk::ModuleConfiguration> cfg);
   void get_info(opmonlib::InfoCollector& ci, int level);
 
   virtual std::unique_ptr<dunedaq::readoutlibs::ReadoutConcept>
-  create_readout(const nlohmann::json& args, std::atomic<bool>& run_marker) = 0;
+  create_readout(const appdal::ReadoutModule* modconf, std::atomic<bool>& run_marker) = 0;
 
   // Commands
   void do_conf(const nlohmann::json& /*args*/);

@@ -18,14 +18,19 @@ DataLinkHandlerBase::DataLinkHandlerBase(const std::string& name)
 
 
 void
-DataLinkHandlerBase::init(const nlohmann::json& args)
+DataLinkHandlerBase::init(std::shared_ptr<appfwk::ModuleConfiguration> cfg)
 {
+  
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_dlh_name() << ": Entering init() method";
-  m_readout_impl = create_readout(args, m_run_marker);
+  const appdal::ReadoutModule* modconf = cfg->module<appdal::ReadoutModule>(get_dlh_name());
+  if(modconf == nullptr) {
+    throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), "not a ReadoutModule");
+  }
+  m_readout_impl = create_readout(modconf, m_run_marker);
   if (m_readout_impl == nullptr) {
     TLOG() << get_dlh_name() << "Initialize readout implementation FAILED! "
            << "Failed to find specialization for given queue setup!";
-    throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), args.dump()); // 4 json ident
+    throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), ""); // 4 json ident
   }
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_dlh_name() << ": Exiting init() method";
 }
