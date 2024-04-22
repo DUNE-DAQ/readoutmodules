@@ -105,6 +105,8 @@ def generate(
         FRONTEND_TYPE = "pacman"
     elif FRONTEND_TYPE== "NDLAr_PDS":
         FRONTEND_TYPE = "mpd"
+    elif FRONTEND_TYPE=="NDGAr":
+        FRONTEND_TYPE = "pat"
     
 
     if DEBUG: print(f'FRONTENT_TYPE={FRONTEND_TYPE}')
