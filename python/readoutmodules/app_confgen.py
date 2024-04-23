@@ -12,6 +12,7 @@ moo.otypes.load_types('dtpctrllibs/dtpcontroller.jsonnet')
 moo.otypes.load_types("readoutlibs/sourceemulatorconfig.jsonnet")
 moo.otypes.load_types("readoutlibs/readoutconfig.jsonnet")
 moo.otypes.load_types('lbrulibs/pacmancardreader.jsonnet')
+moo.otypes.load_types('lbrulibs/patcardreader.jsonnet')
 moo.otypes.load_types("readoutlibs/recorderconfig.jsonnet")
 
 # Import new types
@@ -20,6 +21,7 @@ import dunedaq.flxlibs.felixcardreader as flxcr
 import dunedaq.dtpctrllibs.dtpcontroller as dtpctrl
 import dunedaq.readoutlibs.readoutconfig as rconf
 import dunedaq.lbrulibs.pacmancardreader as pcr
+import dunedaq.lbrulibs.patcardreader as pat
 import dunedaq.readoutlibs.recorderconfig as bfs
 
 from daqconf.core.app import App, ModuleGraph
@@ -105,7 +107,7 @@ def generate(
         FRONTEND_TYPE = "pacman"
     elif FRONTEND_TYPE== "NDLAr_PDS":
         FRONTEND_TYPE = "mpd"
-    elif FRONTEND_TYPE=="NDGAr":
+    elif FRONTEND_TYPE=="ND_GAr":
         FRONTEND_TYPE = "pat"
     
 
@@ -208,9 +210,16 @@ def generate(
             conf = pcr.Conf(link_confs = [pcr.LinkConfiguration(Source_ID=link.dro_source_id)
                                           for link in DRO_CONFIG.links],
                             zmq_receiver_timeout = 10000)
+
+        if FRONTEND_TYPE=="pat":
+            fake_source = "pat_source"
+            card_reader = "PATCardReader"
+            conf        = pat.Conf(link_confs = [pat.LinkConfiguration(Source_ID = link.dro_source_id) for link in DRO_CONFIG.links], mhal_receiver_timeout = 100000)
+            
         modules += [DAQModule(name = fake_source,
                               plugin = card_reader,
                               conf = conf)]
+            
         queues += [Queue(f"{fake_source}.output_{link.dro_source_id}",f"datahandler_{link.dro_source_id}.raw_input",f'{FRONTEND_TYPE}_link_{link.dro_source_id}', 100000) for link in DRO_CONFIG.links]
         queues += [Queue(f"{fake_source}.output_raw_tp_{tp_link}",f"tp_datahandler_{tp_link}.raw_input",f'tp_link_{tp_link}', 100000) for tp_link in link_to_tp_sid_map.values()]
 
