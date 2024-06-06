@@ -20,7 +20,7 @@ FakeCardReaderBase::init(std::shared_ptr<appfwk::ModuleConfiguration> cfg)
   m_cfg = cfg;
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_fcr_name() << ": Entering init() method";
   //auto ini = args.get<appfwk::app::ModInit>();
-  auto ini = cfg->module<appdal::DataReader>(m_name);
+  auto ini = cfg->module<appmodel::DataReader>(m_name);
   if (ini != nullptr && ini->get_configuration()->get_emulation_mode()) {
 
     for (auto qi : ini->get_outputs()) {
@@ -62,12 +62,12 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
   if (m_configured) {
     TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_WORK_STEPS) << "This module is already configured!";
   } else {
-    auto cfg = m_cfg->module<appdal::DataReader>(get_fcr_name());
+    auto cfg = m_cfg->module<appmodel::DataReader>(get_fcr_name());
 
-    std::map<uint32_t, const coredal::DROStreamConf*> streams;
+    std::map<uint32_t, const confmodel::DROStreamConf*> streams;
     for (const auto & readout_if : cfg->get_interfaces()) {
       for (const auto& data_stream : readout_if->get_contains()) {
-        auto dro_stream = data_stream->cast<coredal::DROStreamConf>();
+        auto dro_stream = data_stream->cast<confmodel::DROStreamConf>();
         if (dro_stream != nullptr) {
           streams[dro_stream->get_source_id()] = dro_stream;
         } 
@@ -75,7 +75,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
     }
 
     for (const auto& qi : cfg->get_outputs()) {
-      auto q_with_id = qi->cast<coredal::QueueWithId>();
+      auto q_with_id = qi->cast<confmodel::QueueWithId>();
       if (q_with_id == nullptr) {
         throw readoutlibs::FailedFakeCardInitialization(ERS_HERE, get_fcr_name(), "Queue is not of type QueueWithId");
       }  
