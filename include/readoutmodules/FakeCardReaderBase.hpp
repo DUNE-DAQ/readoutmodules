@@ -17,12 +17,12 @@
 //#include "readoutlibs/sourceemulatorconfig/Structs.hpp"
 //#include "readoutlibs/sourceemulatorconfig/Nljs.hpp"
 
-#include "coredal/DaqModule.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/ReadoutInterface.hpp"
-#include "coredal/QueueWithId.hpp"
-#include "appdal/DataReader.hpp"
-#include "appdal/DataReaderConf.hpp"
+#include "confmodel/DaqModule.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/ReadoutInterface.hpp"
+#include "confmodel/QueueWithId.hpp"
+#include "appmodel/DataReader.hpp"
+#include "appmodel/DataReaderConf.hpp"
 
 #include "appfwk/ModuleConfiguration.hpp"
 
