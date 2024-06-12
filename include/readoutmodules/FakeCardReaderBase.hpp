@@ -14,13 +14,13 @@
 
 // package
 #include "readoutlibs/concepts/SourceEmulatorConcept.hpp"
-//#include "readoutlibs/sourceemulatorconfig/Structs.hpp"
-//#include "readoutlibs/sourceemulatorconfig/Nljs.hpp"
 
 #include "confmodel/DaqModule.hpp"
 #include "confmodel/Connection.hpp"
-#include "confmodel/ReadoutInterface.hpp"
 #include "confmodel/QueueWithId.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
+#include "confmodel/DetDataSender.hpp"
+#include "confmodel/DetectorStream.hpp"
 #include "appmodel/DataReader.hpp"
 #include "appmodel/DataReaderConf.hpp"
 

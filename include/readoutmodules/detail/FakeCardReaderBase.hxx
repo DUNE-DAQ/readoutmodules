@@ -64,13 +64,19 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
   } else {
     auto cfg = m_cfg->module<appmodel::DataReader>(get_fcr_name());
 
-    std::map<uint32_t, const confmodel::DROStreamConf*> streams;
-    for (const auto & readout_if : cfg->get_interfaces()) {
-      for (const auto& data_stream : readout_if->get_contains()) {
-        auto dro_stream = data_stream->cast<confmodel::DROStreamConf>();
-        if (dro_stream != nullptr) {
-          streams[dro_stream->get_source_id()] = dro_stream;
-        } 
+    std::map<uint32_t, const confmodel::DetectorStream*> streams;
+    for (const auto & det_connections : cfg->get_connections()) {
+      	    
+      for (const auto& det_res : det_connections->get_contains()) {
+	const confmodel::DetDataSender *data_sender = det_res->cast<confmodel::DetDataSender>();
+        if (data_sender != nullptr) {
+	  for (const auto& det_stream : data_senders->get_contains()) {	
+            auto dro_stream = det_stream->cast<confmodel::DetectorStream>();
+            if (dro_stream != nullptr) {
+              streams[dro_stream->get_source_id()] = dro_stream;
+            } 
+	  }
+	}
       }
     }
 
