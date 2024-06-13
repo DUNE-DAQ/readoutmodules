@@ -70,7 +70,7 @@ FakeCardReaderBase::do_conf(const nlohmann::json& /*args*/)
       for (const auto& det_res : det_connections->get_contains()) {
 	const confmodel::DetDataSender *data_sender = det_res->cast<confmodel::DetDataSender>();
         if (data_sender != nullptr) {
-	  for (const auto& det_stream : data_senders->get_contains()) {	
+	  for (const auto& det_stream : data_sender->get_contains()) {	
             auto dro_stream = det_stream->cast<confmodel::DetectorStream>();
             if (dro_stream != nullptr) {
               streams[dro_stream->get_source_id()] = dro_stream;
