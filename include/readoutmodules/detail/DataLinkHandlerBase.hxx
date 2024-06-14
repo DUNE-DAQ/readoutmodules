@@ -22,9 +22,9 @@ DataLinkHandlerBase::init(std::shared_ptr<appfwk::ModuleConfiguration> cfg)
 {
   
   TLOG_DEBUG(dunedaq::readoutlibs::logging::TLVL_ENTER_EXIT_METHODS) << get_dlh_name() << ": Entering init() method";
-  const appmodel::ReadoutModule* modconf = cfg->module<appmodel::ReadoutModule>(get_dlh_name());
+  const appmodel::DataHandlerModule* modconf = cfg->module<appmodel::DataHandlerModule>(get_dlh_name());
   if(modconf == nullptr) {
-    throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), "not a ReadoutModule");
+    throw dunedaq::readoutmodules::FailedReadoutInitialization(ERS_HERE, get_dlh_name(), "not a DataHandlerModule");
   }
   m_readout_impl = create_readout(modconf, m_run_marker);
   if (m_readout_impl == nullptr) {
