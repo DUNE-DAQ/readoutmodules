@@ -17,12 +17,12 @@
 
 #include "confmodel/DaqModule.hpp"
 #include "confmodel/Connection.hpp"
-#include "confmodel/QueueWithId.hpp"
+#include "confmodel/QueueWithSourceId.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "appmodel/DataReader.hpp"
-#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataReceiverModule.hpp"
+#include "appmodel/DataReceiverConf.hpp"
 
 #include "appfwk/ModuleConfiguration.hpp"
 

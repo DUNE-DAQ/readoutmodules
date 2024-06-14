@@ -122,7 +122,7 @@ ERS_DECLARE_ISSUE(readoutmodules,
                   ((std::string)queueType)((std::string)moduleName))
 
 ERS_DECLARE_ISSUE_BASE(readoutmodules,
-                       DataRecorderResourceQueueError,
+                       DataRecorderModuleResourceQueueError,
                        readoutmodules::DataRecorderConfigurationError,
                        " The " << queueType << " queue was not successfully created. ",
                        ((std::string)name),
