@@ -21,8 +21,8 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "appmodel/DataReceiverModule.hpp"
-#include "appmodel/DataReceiverConf.hpp"
+#include "appmodel/DataReaderModule.hpp"
+#include "appmodel/DataReaderConf.hpp"
 
 #include "appfwk/ModuleConfiguration.hpp"
 
