@@ -36,11 +36,11 @@ set(READOUTMODULES_DEPENDENCIES
   detdataformats::detdataformats
 )
 
-set(FDREADOUTLIBS_USE_INTRINSICS ON)
-
-if(${FDREADOUTLIBS_USE_INTRINSICS})
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
-endif()
+#set(FDREADOUTLIBS_USE_INTRINSICS ON)
+#
+#if(${FDREADOUTLIBS_USE_INTRINSICS})
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
+#endif()
 
 
 ##############################################################################
